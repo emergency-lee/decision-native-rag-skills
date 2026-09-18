@@ -1,0 +1,40 @@
+[
+ {
+  "w": 375,
+  "docScroll": true,
+  "hScroll": 0,
+  "scW": 0,
+  "innerScrollable": true,
+  "small": [],
+  "wide": []
+ },
+ {
+  "w": 390,
+  "docScroll": true,
+  "hScroll": 0,
+  "scW": 0,
+  "innerScrollable": true,
+  "small": [],
+  "wide": []
+ },
+ {
+  "w": 1280,
+  "docScroll": true,
+  "hScroll": 0,
+  "scW": 0,
+  "innerScrollable": true,
+  "small": [],
+  "wide": []
+ },
+ {
+  "en": {
+   "lang": "en",
+   "h1": "Instead of rereading everything, AI retrieves once and keeps deciding.",
+   "remainKo": 0
+  },
+  "ko": {
+   "lang": "ko",
+   "brs": true
+  }
+ }
+]
