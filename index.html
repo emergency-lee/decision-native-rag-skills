@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="description" content="Decision-native AI: how System One decision models may reshape RAG from ranking chunks to assembling evidence." />
+  <meta property="og:title" content="Decision-Native AI — Beyond Top-K RAG" />
+  <meta property="og:description" content="Retrieve broadly. Decide explicitly. Assemble evidence. Reason only over what matters." />
+  <title>Decision-Native AI — Beyond Top-K RAG</title>
+  <meta name="color-scheme" content="light dark" />
+  <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)" />
+  <meta name="theme-color" content="#121210" media="(prefers-color-scheme: dark)" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://jev-shift.vercel.app/" />
+  <meta property="og:image" content="https://jev-shift.vercel.app/og.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Decision-Native AI — Beyond Top-K RAG" />
+  <meta name="twitter:description" content="Retrieve broadly. Decide explicitly. Assemble evidence. Reason only over what matters." />
+  <meta name="twitter:image" content="https://jev-shift.vercel.app/og.png" />
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" />
+  <link rel="stylesheet" href="./styles.css" />
+</head>
+<body>
+<div class="app">
+  <header class="nav-bar"><div class="nav shell">
+    <a class="brand" href="#top" aria-label="Decision-Native AI home">
+      <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+      <span>Decision-Native AI</span>
+    </a>
+    <nav>
+      <a href="#shift" data-ko="변화" data-en="Shift">변화</a>
+      <a href="#rag" data-ko="RAG" data-en="RAG">RAG</a>
+      <a href="#skills" data-ko="스킬" data-en="Skills">스킬</a>
+      <a href="#evidence" data-ko="근거" data-en="Evidence">근거</a>
+    </nav>
+    <div class="nav-actions">
+      <button id="languageToggle" class="language-toggle" type="button" aria-label="Switch language">EN</button>
+      <a class="github-btn" href="https://github.com/emergency-lee/decision-native-rag-skills" target="_blank" rel="noreferrer">GitHub ↗</a>
+    </div>
+  </div></header>
+
+  <div class="scroller" id="scroller">
+  <main id="top">
+    <section class="hero shell">
+      <div class="hero-copy">
+        <p class="kicker" data-ko="생성에서 판단으로" data-en="FROM GENERATION TO DECISION">생성에서 판단으로</p>
+        <h1 data-ko="AI가 모든 것을 다시 읽는 대신, 한 번 찾고 계속 판단한다." data-en="Instead of rereading everything, AI retrieves once and keeps deciding.">AI가 모든 것을 다시 읽는 대신,<br/>한 번 찾고 계속 판단한다.</h1>
+        <p class="hero-lede" data-ko="Jev 같은 System One 모델과 빠르게 등장한 오픈 구현들은 새로운 가능성을 보여준다. 의미 판단이 충분히 싸고 빠르면, RAG의 중심은 ‘가장 비슷한 5개’를 찾는 것에서 ‘충분하고 모순을 설명할 수 있는 근거 집합’을 만드는 것으로 이동한다." data-en="System One models such as Jev—and the rapid arrival of open implementations—point to a different architecture. If semantic judgement becomes cheap and fast enough, RAG shifts from finding the five most similar chunks to building a sufficient, non-redundant, conflict-aware evidence set.">Jev 같은 System One 모델과 빠르게 등장한 오픈 구현들은 새로운 가능성을 보여준다. 의미 판단이 충분히 싸고 빠르면, RAG의 중심은 ‘가장 비슷한 5개’를 찾는 것에서 ‘충분하고 모순을 설명할 수 있는 근거 집합’을 만드는 것으로 이동한다.</p>
+        <div class="hero-actions">
+          <a class="primary" href="#shift" data-ko="왜 달라지는가" data-en="See the shift">왜 달라지는가</a>
+          <a class="secondary" href="https://github.com/emergency-lee/decision-native-rag-skills" target="_blank" rel="noreferrer" data-ko="오픈소스 스킬셋" data-en="Open-source skillset">오픈소스 스킬셋</a>
+        </div>
+      </div>
+      <div class="hero-system" aria-label="Old and new RAG architecture comparison">
+        <div class="system-column old">
+          <span class="system-label" data-ko="기존 기본값" data-en="OLD DEFAULT">기존 기본값</span>
+          <div class="node">Query</div><span class="flow">↓</span>
+          <div class="node">Embedding</div><span class="flow">↓</span>
+          <div class="node">Rank</div><span class="flow">↓</span>
+          <div class="node danger">Top-K</div><span class="flow">↓</span>
+          <div class="node">LLM</div>
+        </div>
+        <div class="divider"><span>→</span></div>
+        <div class="system-column new">
+          <span class="system-label" data-ko="판단 중심" data-en="DECISION-NATIVE">판단 중심</span>
+          <div class="node">Retrieve Wide</div><span class="flow">↓</span>
+          <div class="node accent">Decide</div><span class="flow">↓</span>
+          <div class="node accent">Evidence Set</div><span class="flow">↓</span>
+          <div class="node">Reason</div>
+          <div class="micro-tags"><span>conflict</span><span>freshness</span><span>coverage</span><span>authority</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="signal-band" id="shift">
+      <div class="shell">
+        <div class="section-head">
+          <p class="section-number">01</p>
+          <h2 data-ko="변하는 것은 모델 하나가 아니라 소프트웨어의 판단 비용이다." data-en="The shift is not one model. It is the cost of semantic judgement inside software.">변하는 것은 모델 하나가 아니라<br/>소프트웨어의 판단 비용이다.</h2>
+        </div>
+        <div class="fact-grid">
+          <article>
+            <span class="fact-type observed" data-ko="공개 사실" data-en="OBSERVED">공개 사실</span>
+            <h3 data-ko="Jev는 텍스트 생성 대신 typed probabilistic decision을 반환한다." data-en="Jev returns typed probabilistic decisions rather than prose generation.">Jev는 텍스트 생성 대신 typed probabilistic decision을 반환한다.</h3>
+            <p data-ko="TypeSafe는 이를 System One 모델로 설명하며, 비정형 상태를 받아 소프트웨어가 직접 사용할 수 있는 구조화된 판단과 확률을 반환하는 방식으로 제시한다." data-en="TypeSafe describes this as a System One model: unstructured state in, structured decisions and probabilities that software can consume directly.">TypeSafe는 이를 System One 모델로 설명하며, 비정형 상태를 받아 소프트웨어가 직접 사용할 수 있는 구조화된 판단과 확률을 반환하는 방식으로 제시한다.</p>
+          </article>
+          <article>
+            <span class="fact-type observed" data-ko="공개 사실" data-en="OBSERVED">공개 사실</span>
+            <h3 data-ko="오픈 구현은 이미 ‘생성 없이 option logits를 읽는’ 패턴을 재현하고 있다." data-en="Open implementations already reproduce the pattern of scoring options without decoding prose.">오픈 구현은 이미 ‘생성 없이 option logits를 읽는’ 패턴을 재현하고 있다.</h3>
+            <p data-ko="Qwen·Gemma 계열을 이용한 여러 독립 프로젝트가 shared-state prefill, one-pass option scoring, Jev-compatible API 같은 접근을 공개했다. 하지만 완전한 Jev 성능·경제성의 재현이 입증된 것은 아니다." data-en="Independent projects using Qwen and Gemma families have published shared-state prefill, one-pass option scoring, and Jev-compatible APIs. They have not yet established full Jev parity or universal economics.">Qwen·Gemma 계열을 이용한 여러 독립 프로젝트가 shared-state prefill, one-pass option scoring, Jev-compatible API 같은 접근을 공개했다. 하지만 완전한 Jev 성능·경제성의 재현이 입증된 것은 아니다.</p>
+          </article>
+          <article>
+            <span class="fact-type hypothesis" data-ko="가설" data-en="HYPOTHESIS">가설</span>
+            <h3 data-ko="판단의 한계비용이 낮아지면 AI 호출 수는 줄기보다 늘어날 수 있다." data-en="As marginal judgement cost falls, AI calls may multiply rather than disappear.">판단의 한계비용이 낮아지면 AI 호출 수는 줄기보다 늘어날 수 있다.</h3>
+            <p data-ko="relevant? duplicate? stale? enough evidence? retry? escalate? 같은 작은 의미 판단이 프로그램 내부의 평범한 분기처럼 사용될 수 있기 때문이다. 이 가설은 실제 워크로드에서 검증해야 한다." data-en="Questions such as relevant, duplicate, stale, sufficient evidence, retry, or escalate can become ordinary semantic branches inside software. This must be tested on real workloads.">relevant? duplicate? stale? enough evidence? retry? escalate? 같은 작은 의미 판단이 프로그램 내부의 평범한 분기처럼 사용될 수 있기 때문이다. 이 가설은 실제 워크로드에서 검증해야 한다.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="rag-section shell" id="rag">
+      <div class="section-head split-head">
+        <div>
+          <p class="section-number">02</p>
+          <h2 data-ko="RAG는 가장 먼저 구조가 바뀔 수 있는 영역이다." data-en="RAG is one of the first architectures likely to change.">RAG는 가장 먼저<br/>구조가 바뀔 수 있는 영역이다.</h2>
+        </div>
+        <p class="section-intro" data-ko="임베딩은 사라지지 않는다. 역할이 명확해진다. 후보를 넓게 찾고, 값싼 semantic decision layer가 실제 근거 집합을 구성한다." data-en="Embeddings do not disappear. Their role becomes clearer: retrieve a broad candidate pool, then let a cheap semantic decision layer construct the actual evidence set.">임베딩은 사라지지 않는다. 역할이 명확해진다. 후보를 넓게 찾고, 값싼 semantic decision layer가 실제 근거 집합을 구성한다.</p>
+      </div>
+
+      <div class="pipeline">
+        <div class="pipe-stage"><span>01</span><strong data-ko="넓게 찾기" data-en="Retrieve wide">넓게 찾기</strong><small>dense · sparse · filters</small></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-stage active"><span>02</span><strong data-ko="명시적으로 판단" data-en="Decide explicitly">명시적으로 판단</strong><small>relevance · evidence · time</small></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-stage active"><span>03</span><strong data-ko="근거 집합 구성" data-en="Build evidence set">근거 집합 구성</strong><small>dedupe · conflict · coverage</small></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-stage"><span>04</span><strong data-ko="필요한 것만 추론" data-en="Reason over what matters">필요한 것만 추론</strong><small>answer · cite · abstain</small></div>
+      </div>
+
+      <div class="problem-matrix">
+        <div class="matrix-header" data-ko="기존 RAG의 실전 문제" data-en="Production RAG failure mode">기존 RAG의 실전 문제</div>
+        <div class="matrix-header" data-ko="재정의" data-en="Decision-native reframing">재정의</div>
+        <div><strong data-ko="0.82, 0.81, 0.80 — 비슷한 후보를 억지로 순위화" data-en="0.82, 0.81, 0.80 — forced ranking among near-ties">0.82, 0.81, 0.80 — 비슷한 후보를 억지로 순위화</strong></div><div data-ko="현재 evidence set에 ‘새로운 근거’를 더하는가?" data-en="Does it add marginal evidence to the current set?">현재 evidence set에 ‘새로운 근거’를 더하는가?</div>
+        <div><strong data-ko="상충 문서 중 하나가 높은 점수라서 살아남음" data-en="One conflicting source survives simply because it ranked higher">상충 문서 중 하나가 높은 점수라서 살아남음</strong></div><div data-ko="모순인가, 예외인가, 버전 차이인가, 권위 차이인가?" data-en="Is it contradiction, exception, supersession, or authority hierarchy?">모순인가, 예외인가, 버전 차이인가, 권위 차이인가?</div>
+        <div><strong data-ko="Top-K라서 관련 없는 것도 항상 K개 전달" data-en="Fixed Top-K always sends K items—even when none are useful">Top-K라서 관련 없는 것도 항상 K개 전달</strong></div><div data-ko="0개도 정답. evidence sufficiency가 종료 조건." data-en="Zero is valid. Evidence sufficiency becomes the stopping rule.">0개도 정답. evidence sufficiency가 종료 조건.</div>
+        <div><strong data-ko="중복 chunk가 context window를 소비" data-en="Duplicate chunks consume the context window">중복 chunk가 context window를 소비</strong></div><div data-ko="문장 유사도가 아니라 claim equivalence와 marginal value 평가" data-en="Evaluate claim equivalence and marginal value, not only text similarity">문장 유사도가 아니라 claim equivalence와 marginal value 평가</div>
+      </div>
+    </section>
+
+    <section class="skills-section" id="skills">
+      <div class="shell">
+        <div class="section-head">
+          <p class="section-number">03</p>
+          <h2 data-ko="아이디어를 실제 시스템으로 옮기는 3개의 Agent Skill." data-en="Three Agent Skills to move the idea into real systems.">아이디어를 실제 시스템으로 옮기는<br/>3개의 Agent Skill.</h2>
+          <p class="skills-note" data-ko="특정 Python 스크립트를 실행하지 않는다. 현재 저장소를 읽고, 최신 공개 문서를 조사하고, 그 프로젝트의 언어와 프레임워크 안에서 필요한 구현을 생성한다." data-en="No required Python harness. The agent reads the current repository, checks current public documentation, and creates the needed implementation inside the project's own language and framework.">특정 Python 스크립트를 실행하지 않는다. 현재 저장소를 읽고, 최신 공개 문서를 조사하고, 그 프로젝트의 언어와 프레임워크 안에서 필요한 구현을 생성한다.</p>
+        </div>
+        <div class="skill-cards">
+          <a class="skill-card" href="https://github.com/emergency-lee/decision-native-rag-skills/blob/main/skills/rag-migrate/SKILL.md" target="_blank" rel="noreferrer">
+            <span class="skill-index">01</span>
+            <h3>rag-migrate</h3>
+            <p data-ko="기존 RAG를 읽고 baseline을 고정한 뒤, decision layer와 evidence-set builder를 단계적으로 삽입한다. shadow → canary → rollback을 기본값으로 둔다." data-en="Inspect an existing RAG, freeze the baseline, then incrementally insert a decision layer and evidence-set builder with shadow, canary, and rollback by default.">기존 RAG를 읽고 baseline을 고정한 뒤, decision layer와 evidence-set builder를 단계적으로 삽입한다. shadow → canary → rollback을 기본값으로 둔다.</p>
+            <span class="open-link" data-ko="SKILL.md 보기 ↗" data-en="Open SKILL.md ↗">SKILL.md 보기 ↗</span>
+          </a>
+          <a class="skill-card" href="https://github.com/emergency-lee/decision-native-rag-skills/blob/main/skills/rag-evaluate/SKILL.md" target="_blank" rel="noreferrer">
+            <span class="skill-index">02</span>
+            <h3>rag-evaluate</h3>
+            <p data-ko="offline paired replay부터 실제 shadow, canary, A/B까지 자동 비교 체계를 만든다. recall뿐 아니라 conflict, redundancy, unsupported claims, latency, cost, task success를 함께 본다." data-en="Build the comparison system from paired offline replay through live shadow, canary, and A/B testing—covering conflict, redundancy, unsupported claims, latency, cost, and task success, not recall alone.">offline paired replay부터 실제 shadow, canary, A/B까지 자동 비교 체계를 만든다. recall뿐 아니라 conflict, redundancy, unsupported claims, latency, cost, task success를 함께 본다.</p>
+            <span class="open-link" data-ko="SKILL.md 보기 ↗" data-en="Open SKILL.md ↗">SKILL.md 보기 ↗</span>
+          </a>
+          <a class="skill-card" href="https://github.com/emergency-lee/decision-native-rag-skills/blob/main/skills/rag-design/SKILL.md" target="_blank" rel="noreferrer">
+            <span class="skill-index">03</span>
+            <h3>rag-design</h3>
+            <p data-ko="기존 시스템이 없으면 corpus부터 설계한다. semantic unit, hybrid broad retrieval, pluggable decision engine, conflict/sufficiency, provenance, incremental update까지 포함한다." data-en="When no RAG exists, design from the corpus: semantic units, hybrid broad retrieval, pluggable decision engine, conflict/sufficiency, provenance, and incremental updates.">기존 시스템이 없으면 corpus부터 설계한다. semantic unit, hybrid broad retrieval, pluggable decision engine, conflict/sufficiency, provenance, incremental update까지 포함한다.</p>
+            <span class="open-link" data-ko="SKILL.md 보기 ↗" data-en="Open SKILL.md ↗">SKILL.md 보기 ↗</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section class="measurement shell">
+      <div class="section-head split-head">
+        <div><p class="section-number">04</p><h2 data-ko="좋아 보이는 architecture가 아니라, 반증 가능한 성능 가설." data-en="Not a pretty architecture diagram—a falsifiable performance thesis.">좋아 보이는 architecture가 아니라,<br/>반증 가능한 성능 가설.</h2></div>
+        <p class="section-intro" data-ko="이 프로젝트는 Jev/OpenJev가 항상 더 좋다고 주장하지 않는다. 실제 baseline과 같은 corpus·query를 사용해 측정하고, 실패하면 기존 시스템을 유지하는 것이 원칙이다." data-en="This project does not claim Jev or OpenJev is always better. Measure against the real baseline on the same corpus and queries; if it loses, keep the baseline.">이 프로젝트는 Jev/OpenJev가 항상 더 좋다고 주장하지 않는다. 실제 baseline과 같은 corpus·query를 사용해 측정하고, 실패하면 기존 시스템을 유지하는 것이 원칙이다.</p>
+      </div>
+      <div class="metrics-strip">
+        <div><span>↑</span><strong>Evidence Recall</strong><small data-ko="필수 근거를 놓치지 않는가" data-en="Did we recover required evidence?">필수 근거를 놓치지 않는가</small></div>
+        <div><span>↓</span><strong>Redundancy</strong><small data-ko="반복 context가 줄었는가" data-en="Did duplicate context fall?">반복 context가 줄었는가</small></div>
+        <div><span>↑</span><strong>Conflict Capture</strong><small data-ko="상충 근거를 같이 잡는가" data-en="Did we capture both sides?">상충 근거를 같이 잡는가</small></div>
+        <div><span>↓</span><strong>Unsupported Claims</strong><small data-ko="근거 없는 주장이 줄었는가" data-en="Did unsupported claims fall?">근거 없는 주장이 줄었는가</small></div>
+        <div><span>↔</span><strong>p95 / Cost</strong><small data-ko="운영 한계 안에 있는가" data-en="Is it within the operating envelope?">운영 한계 안에 있는가</small></div>
+      </div>
+    </section>
+
+    <section class="evidence-section" id="evidence">
+      <div class="shell">
+        <div class="section-head">
+          <p class="section-number">05</p>
+          <h2 data-ko="공개 자료만 사용했다." data-en="Built only from public information.">공개 자료만 사용했다.</h2>
+          <p class="evidence-intro" data-ko="개인 대화, 비공개 benchmark, 의료 맥락, 내부 조직 자료는 이 사이트와 저장소에 포함하지 않았다. 아래의 사실과 가설도 분리해 표현한다." data-en="No private conversations, private benchmarks, medical context, or internal organisational material is included. Observed facts and architectural hypotheses are explicitly separated.">개인 대화, 비공개 benchmark, 의료 맥락, 내부 조직 자료는 이 사이트와 저장소에 포함하지 않았다. 아래의 사실과 가설도 분리해 표현한다.</p>
+        </div>
+        <div class="sources">
+          <a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" target="_blank" rel="noreferrer"><span>TypeSafe</span><strong>Introducing System One Models and Jev</strong><em>2026-09-14 ↗</em></a>
+          <a href="https://github.com/TheoLeeCJ/openjev" target="_blank" rel="noreferrer"><span>Open source</span><strong>TheoLeeCJ/openjev</strong><em>GitHub ↗</em></a>
+          <a href="https://github.com/daseinlabs/open-jev" target="_blank" rel="noreferrer"><span>Open source</span><strong>daseinlabs/open-jev</strong><em>GitHub ↗</em></a>
+          <a href="https://github.com/ekzhang/openjev-sglang" target="_blank" rel="noreferrer"><span>Open source</span><strong>ekzhang/openjev-sglang</strong><em>GitHub ↗</em></a>
+          <a href="https://microsoft.github.io/graphrag/" target="_blank" rel="noreferrer"><span>Knowledge systems</span><strong>Microsoft GraphRAG</strong><em>Docs ↗</em></a>
+          <a href="https://docs.ragas.io/en/latest/concepts/metrics/available_metrics/" target="_blank" rel="noreferrer"><span>Evaluation</span><strong>Ragas metrics</strong><em>Docs ↗</em></a>
+          <a href="https://agentskills.io/specification" target="_blank" rel="noreferrer"><span>Format</span><strong>Agent Skills Specification</strong><em>Spec ↗</em></a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="shell footer">
+    <p>Decision-Native RAG Skills · MIT · 2026</p>
+    <a href="https://github.com/emergency-lee/decision-native-rag-skills" target="_blank" rel="noreferrer">github.com/emergency-lee/decision-native-rag-skills ↗</a>
+  </footer>
+  </div>
+</div>
+  <script src="./app.js"></script>
+</body>
+</html>
