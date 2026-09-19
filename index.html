@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="description" content="Decision-native AI: how System One decision models may reshape RAG from ranking chunks to assembling evidence." />
   <meta property="og:title" content="Decision-Native AI — Beyond Top-K RAG" />
-  <meta property="og:description" content="Retrieve broadly. Decide explicitly. Assemble evidence. Reason only over what matters." />
+  <meta property="og:description" content="Resolve scope. Retrieve broadly within it. Decide explicitly. Verify evidence. Reason only over what matters." />
   <title>Decision-Native AI — Beyond Top-K RAG</title>
   <meta name="color-scheme" content="light dark" />
   <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)" />
@@ -17,7 +17,7 @@
   <meta property="og:image:height" content="630" />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Decision-Native AI — Beyond Top-K RAG" />
-  <meta name="twitter:description" content="Retrieve broadly. Decide explicitly. Assemble evidence. Reason only over what matters." />
+  <meta name="twitter:description" content="Resolve scope. Retrieve broadly within it. Decide explicitly. Verify evidence. Reason only over what matters." />
   <meta name="twitter:image" content="https://jev-shift.vercel.app/og.png" />
   <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
   <link rel="icon" href="/favicon.ico" sizes="32x32" />
@@ -68,9 +68,10 @@
         <div class="divider"><span>→</span></div>
         <div class="system-column new">
           <span class="system-label" data-ko="판단 중심" data-en="DECISION-NATIVE">판단 중심</span>
-          <div class="node">Retrieve Wide</div><span class="flow">↓</span>
+          <div class="node">Scoped Retrieve</div><span class="flow">↓</span>
           <div class="node accent">Decide</div><span class="flow">↓</span>
           <div class="node accent">Evidence Set</div><span class="flow">↓</span>
+          <div class="node">Verify</div><span class="flow">↓</span>
           <div class="node">Reason</div>
           <div class="micro-tags"><span>conflict</span><span>freshness</span><span>coverage</span><span>authority</span></div>
         </div>
@@ -111,13 +112,15 @@
       </div>
 
       <div class="pipeline">
-        <div class="pipe-stage"><span>01</span><strong data-ko="넓게 찾기" data-en="Retrieve wide">넓게 찾기</strong><small>dense · sparse · filters</small></div>
+        <div class="pipe-stage"><span>01</span><strong data-ko="범위 안에서 넓게 찾기" data-en="Retrieve within scope">범위 안에서 넓게 찾기</strong><small>scope&nbsp;· dense&nbsp;· sparse&nbsp;· filters</small></div>
         <div class="pipe-arrow">→</div>
-        <div class="pipe-stage active"><span>02</span><strong data-ko="명시적으로 판단" data-en="Decide explicitly">명시적으로 판단</strong><small>relevance · evidence · time</small></div>
+        <div class="pipe-stage active"><span>02</span><strong data-ko="명시적으로 판단" data-en="Decide explicitly">명시적으로 판단</strong><small>relevance&nbsp;· evidence&nbsp;· time</small></div>
         <div class="pipe-arrow">→</div>
-        <div class="pipe-stage active"><span>03</span><strong data-ko="근거 집합 구성" data-en="Build evidence set">근거 집합 구성</strong><small>dedupe · conflict · coverage</small></div>
+        <div class="pipe-stage active"><span>03</span><strong data-ko="근거 집합 구성" data-en="Build evidence set">근거 집합 구성</strong><small>dedupe&nbsp;· conflict&nbsp;· coverage</small></div>
         <div class="pipe-arrow">→</div>
-        <div class="pipe-stage"><span>04</span><strong data-ko="필요한 것만 추론" data-en="Reason over what matters">필요한 것만 추론</strong><small>answer · cite · abstain</small></div>
+        <div class="pipe-stage"><span>04</span><strong data-ko="원문으로 검증" data-en="Verify against sources">원문으로 검증</strong><small>id&nbsp;· version&nbsp;· ACL&nbsp;· span</small></div>
+        <div class="pipe-arrow">→</div>
+        <div class="pipe-stage"><span>05</span><strong data-ko="필요한 것만 추론" data-en="Reason over what matters">필요한 것만 추론</strong><small>answer&nbsp;· cite&nbsp;· abstain</small></div>
       </div>
 
       <div class="problem-matrix">
@@ -128,7 +131,7 @@
         <div><strong data-ko="Top-K라서 관련 없는 것도 항상 K개 전달" data-en="Fixed Top-K always sends K items—even when none are useful">Top-K라서 관련 없는 것도 항상 K개 전달</strong></div><div data-ko="0개도 정답. evidence sufficiency가 종료 조건." data-en="Zero is valid. Evidence sufficiency becomes the stopping rule.">0개도 정답. evidence sufficiency가 종료 조건.</div>
         <div><strong data-ko="중복 chunk가 context window를 소비" data-en="Duplicate chunks consume the context window">중복 chunk가 context window를 소비</strong></div><div data-ko="문장 유사도가 아니라 claim equivalence와 marginal value 평가" data-en="Evaluate claim equivalence and marginal value, not only text similarity">문장 유사도가 아니라 claim equivalence와 marginal value 평가</div>
       </div>
-      <p class="section-note" data-ko="임베딩은 사라지지 않는다. 역할이 명확해진다. 후보를 넓게 찾고, 값싼 semantic decision layer가 실제 근거 집합을 구성한다." data-en="Embeddings do not disappear. Their role becomes clearer: retrieve a broad candidate pool, then let a cheap semantic decision layer construct the actual evidence set.">임베딩은 사라지지 않는다. 역할이 명확해진다. 후보를 넓게 찾고, 값싼 semantic decision layer가 실제 근거 집합을 구성한다.</p>
+      <p class="section-note" data-ko="임베딩은 사라지지 않는다. 역할이 명확해진다. 정해진 범위 안에서 후보를 넓게 찾고, 값싼 semantic decision layer가 근거 집합을 구성하고, 원문 시스템이 그 근거를 검증한다." data-en="Embeddings do not disappear. Their role becomes clearer: retrieve a broad candidate pool within the resolved scope, let a cheap semantic decision layer construct the evidence set, and let the source systems verify it.">임베딩은 사라지지 않는다. 역할이 명확해진다. 정해진 범위 안에서 후보를 넓게 찾고, 값싼 semantic decision layer가 근거 집합을 구성하고, 원문 시스템이 그 근거를 검증한다.</p>
     </section>
 
     <section class="skills-section" id="skills">

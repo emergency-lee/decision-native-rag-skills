@@ -1,0 +1,114 @@
+[
+ {
+  "w": 375,
+  "hScroll": 0,
+  "over": [],
+  "small": [],
+  "stages": [
+   109,
+   109,
+   109,
+   109,
+   109
+  ],
+  "hero": [
+   392,
+   392
+  ]
+ },
+ {
+  "w": 390,
+  "hScroll": 0,
+  "over": [],
+  "small": [],
+  "stages": [
+   109,
+   109,
+   109,
+   109,
+   109
+  ],
+  "hero": [
+   392,
+   392
+  ]
+ },
+ {
+  "w": 761,
+  "hScroll": 0,
+  "over": [],
+  "small": [],
+  "stages": [
+   216,
+   216,
+   216,
+   216,
+   216
+  ],
+  "hero": [
+   356,
+   356
+  ]
+ },
+ {
+  "w": 800,
+  "hScroll": 0,
+  "over": [],
+  "small": [],
+  "stages": [
+   188,
+   188,
+   188,
+   188,
+   188
+  ],
+  "hero": [
+   356,
+   356
+  ]
+ },
+ {
+  "w": 1024,
+  "hScroll": 0,
+  "over": [],
+  "small": [],
+  "stages": [
+   153,
+   153,
+   153,
+   153,
+   153
+  ],
+  "hero": [
+   408,
+   408
+  ]
+ },
+ {
+  "w": 1280,
+  "hScroll": 0,
+  "over": [],
+  "small": [],
+  "stages": [
+   126,
+   126,
+   126,
+   126,
+   126
+  ],
+  "hero": [
+   356,
+   356
+  ]
+ },
+ {
+  "en": [
+   "Retrieve within scope",
+   "Decide explicitly",
+   "Build evidence set",
+   "Verify against sources",
+   "Reason over what matters"
+  ],
+  "note": "Embeddings do not disappear. Their role becomes clearer: retrieve a broad candidate pool within the resolved scope, let "
+ }
+]

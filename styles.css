@@ -417,10 +417,13 @@ p { margin: 0; }
   .sources { grid-template-columns: 1fr; }
 }
 
-@media (max-width: 760px) {
-  .nav nav { display: none; }
+@media (max-width: 1000px) {
   .pipeline { flex-direction: column; gap: 6px; }
   .pipe-arrow { justify-content: center; transform: rotate(90deg); height: 18px; }
+}
+
+@media (max-width: 760px) {
+  .nav nav { display: none; }
 }
 
 @media (max-width: 639px) {
