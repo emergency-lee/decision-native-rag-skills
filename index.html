@@ -42,7 +42,6 @@
     </nav>
     <div class="nav-actions">
       <button id="languageToggle" class="language-toggle" type="button" aria-label="Switch language">EN</button>
-      <a class="github-btn" href="https://github.com/emergency-lee/decision-native-rag-skills" target="_blank" rel="noreferrer">GitHub ↗</a>
     </div>
   </div></header>
 
@@ -51,11 +50,10 @@
     <section class="hero shell">
       <div class="hero-copy">
         <p class="kicker" data-ko="생성에서 판단으로" data-en="FROM GENERATION TO DECISION">생성에서 판단으로</p>
-        <h1 data-ko="AI가 모든 것을 다시 읽는 대신, 한 번 찾고 계속 판단한다." data-en="Instead of rereading everything, AI retrieves once and keeps deciding.">AI가 모든 것을 다시 읽는 대신,<br/>한 번 찾고 계속 판단한다.</h1>
-        <p class="hero-lede" data-ko="Jev 같은 System One 모델과 빠르게 등장한 오픈 구현들은 새로운 가능성을 보여준다. 의미 판단이 충분히 싸고 빠르면, RAG의 중심은 ‘가장 비슷한 5개’를 찾는 것에서 ‘충분하고 모순을 설명할 수 있는 근거 집합’을 만드는 것으로 이동한다." data-en="System One models such as Jev—and the rapid arrival of open implementations—point to a different architecture. If semantic judgement becomes cheap and fast enough, RAG shifts from finding the five most similar chunks to building a sufficient, non-redundant, conflict-aware evidence set.">Jev 같은 System One 모델과 빠르게 등장한 오픈 구현들은 새로운 가능성을 보여준다. 의미 판단이 충분히 싸고 빠르면, RAG의 중심은 ‘가장 비슷한 5개’를 찾는 것에서 ‘충분하고 모순을 설명할 수 있는 근거 집합’을 만드는 것으로 이동한다.</p>
+        <h1 data-ko="AI가 모든 것을 다시 읽는 대신, 한 번 찾고 계속 판단한다." data-en="Instead of rereading everything, AI retrieves once and keeps deciding.">AI가 모든 것을 다시 읽는 대신, <br/>한 번 찾고 계속 판단한다.</h1>
         <div class="hero-actions">
           <a class="primary" href="#shift" data-ko="왜 달라지는가" data-en="See the shift">왜 달라지는가</a>
-          <a class="secondary" href="https://github.com/emergency-lee/decision-native-rag-skills" target="_blank" rel="noreferrer" data-ko="오픈소스 스킬셋" data-en="Open-source skillset">오픈소스 스킬셋</a>
+          <a class="highlight" href="#skills" data-ko="RAG에 바로 쓰는 오픈소스 스킬 3종 ↓" data-en="Three open-source skills for RAG ↓">RAG에 바로 쓰는 오픈소스 스킬 3종 ↓</a>
         </div>
       </div>
       <div class="hero-system" aria-label="Old and new RAG architecture comparison">
@@ -83,7 +81,7 @@
       <div class="shell">
         <div class="section-head">
           <p class="section-number">01</p>
-          <h2 data-ko="변하는 것은 모델 하나가 아니라 소프트웨어의 판단 비용이다." data-en="The shift is not one model. It is the cost of semantic judgement inside software.">변하는 것은 모델 하나가 아니라<br/>소프트웨어의 판단 비용이다.</h2>
+          <h2 data-ko="변하는 것은 모델 하나가 아니라 소프트웨어의 판단 비용이다." data-en="The shift is not one model. It is the cost of semantic judgement inside software.">변하는 것은 모델 하나가 아니라 <br/>소프트웨어의 판단 비용이다.</h2>
         </div>
         <div class="fact-grid">
           <article>
@@ -102,16 +100,14 @@
             <p data-ko="relevant? duplicate? stale? enough evidence? retry? escalate? 같은 작은 의미 판단이 프로그램 내부의 평범한 분기처럼 사용될 수 있기 때문이다. 이 가설은 실제 워크로드에서 검증해야 한다." data-en="Questions such as relevant, duplicate, stale, sufficient evidence, retry, or escalate can become ordinary semantic branches inside software. This must be tested on real workloads.">relevant? duplicate? stale? enough evidence? retry? escalate? 같은 작은 의미 판단이 프로그램 내부의 평범한 분기처럼 사용될 수 있기 때문이다. 이 가설은 실제 워크로드에서 검증해야 한다.</p>
           </article>
         </div>
+        <p class="band-note" data-ko="Jev 같은 System One 모델과 빠르게 등장한 오픈 구현들은 새로운 가능성을 보여준다. 의미 판단이 충분히 싸고 빠르면, RAG의 중심은 ‘가장 비슷한 5개’를 찾는 것에서 ‘충분하고 모순을 설명할 수 있는 근거 집합’을 만드는 것으로 이동한다." data-en="System One models such as Jev—and the rapid arrival of open implementations—point to a different architecture. If semantic judgement becomes cheap and fast enough, RAG shifts from finding the five most similar chunks to building a sufficient, non-redundant, conflict-aware evidence set.">Jev 같은 System One 모델과 빠르게 등장한 오픈 구현들은 새로운 가능성을 보여준다. 의미 판단이 충분히 싸고 빠르면, RAG의 중심은 ‘가장 비슷한 5개’를 찾는 것에서 ‘충분하고 모순을 설명할 수 있는 근거 집합’을 만드는 것으로 이동한다.</p>
       </div>
     </section>
 
     <section class="rag-section shell" id="rag">
-      <div class="section-head split-head">
-        <div>
+      <div class="section-head">
           <p class="section-number">02</p>
-          <h2 data-ko="RAG는 가장 먼저 구조가 바뀔 수 있는 영역이다." data-en="RAG is one of the first architectures likely to change.">RAG는 가장 먼저<br/>구조가 바뀔 수 있는 영역이다.</h2>
-        </div>
-        <p class="section-intro" data-ko="임베딩은 사라지지 않는다. 역할이 명확해진다. 후보를 넓게 찾고, 값싼 semantic decision layer가 실제 근거 집합을 구성한다." data-en="Embeddings do not disappear. Their role becomes clearer: retrieve a broad candidate pool, then let a cheap semantic decision layer construct the actual evidence set.">임베딩은 사라지지 않는다. 역할이 명확해진다. 후보를 넓게 찾고, 값싼 semantic decision layer가 실제 근거 집합을 구성한다.</p>
+          <h2 data-ko="RAG는 가장 먼저 구조가 바뀔 수 있는 영역이다." data-en="RAG is one of the first architectures likely to change.">RAG는 가장 먼저 <br/>구조가 바뀔 수 있는 영역이다.</h2>
       </div>
 
       <div class="pipeline">
@@ -132,14 +128,14 @@
         <div><strong data-ko="Top-K라서 관련 없는 것도 항상 K개 전달" data-en="Fixed Top-K always sends K items—even when none are useful">Top-K라서 관련 없는 것도 항상 K개 전달</strong></div><div data-ko="0개도 정답. evidence sufficiency가 종료 조건." data-en="Zero is valid. Evidence sufficiency becomes the stopping rule.">0개도 정답. evidence sufficiency가 종료 조건.</div>
         <div><strong data-ko="중복 chunk가 context window를 소비" data-en="Duplicate chunks consume the context window">중복 chunk가 context window를 소비</strong></div><div data-ko="문장 유사도가 아니라 claim equivalence와 marginal value 평가" data-en="Evaluate claim equivalence and marginal value, not only text similarity">문장 유사도가 아니라 claim equivalence와 marginal value 평가</div>
       </div>
+      <p class="section-note" data-ko="임베딩은 사라지지 않는다. 역할이 명확해진다. 후보를 넓게 찾고, 값싼 semantic decision layer가 실제 근거 집합을 구성한다." data-en="Embeddings do not disappear. Their role becomes clearer: retrieve a broad candidate pool, then let a cheap semantic decision layer construct the actual evidence set.">임베딩은 사라지지 않는다. 역할이 명확해진다. 후보를 넓게 찾고, 값싼 semantic decision layer가 실제 근거 집합을 구성한다.</p>
     </section>
 
     <section class="skills-section" id="skills">
       <div class="shell">
         <div class="section-head">
           <p class="section-number">03</p>
-          <h2 data-ko="아이디어를 실제 시스템으로 옮기는 3개의 Agent Skill." data-en="Three Agent Skills to move the idea into real systems.">아이디어를 실제 시스템으로 옮기는<br/>3개의 Agent Skill.</h2>
-          <p class="skills-note" data-ko="특정 Python 스크립트를 실행하지 않는다. 현재 저장소를 읽고, 최신 공개 문서를 조사하고, 그 프로젝트의 언어와 프레임워크 안에서 필요한 구현을 생성한다." data-en="No required Python harness. The agent reads the current repository, checks current public documentation, and creates the needed implementation inside the project's own language and framework.">특정 Python 스크립트를 실행하지 않는다. 현재 저장소를 읽고, 최신 공개 문서를 조사하고, 그 프로젝트의 언어와 프레임워크 안에서 필요한 구현을 생성한다.</p>
+          <h2 data-ko="아이디어를 실제 시스템으로 옮기는 3개의 Agent Skill." data-en="Three Agent Skills to move the idea into real systems.">아이디어를 실제 시스템으로 옮기는 <br/>3개의 Agent Skill.</h2>
         </div>
         <div class="skill-cards">
           <a class="skill-card" href="https://github.com/emergency-lee/decision-native-rag-skills/blob/main/skills/rag-migrate/SKILL.md" target="_blank" rel="noreferrer">
@@ -161,13 +157,16 @@
             <span class="open-link" data-ko="SKILL.md 보기 ↗" data-en="Open SKILL.md ↗">SKILL.md 보기 ↗</span>
           </a>
         </div>
+        <div class="skills-cta">
+          <a class="github-cta" href="https://github.com/emergency-lee/decision-native-rag-skills" target="_blank" rel="noreferrer" data-ko="GitHub에서 스킬 받기 ↗" data-en="Get the skills on GitHub ↗">GitHub에서 스킬 받기 ↗</a>
+          <p class="section-note" data-ko="특정 Python 스크립트를 실행하지 않는다. 현재 저장소를 읽고, 최신 공개 문서를 조사하고, 그 프로젝트의 언어와 프레임워크 안에서 필요한 구현을 생성한다." data-en="No required Python harness. The agent reads the current repository, checks current public documentation, and creates the needed implementation inside the project's own language and framework.">특정 Python 스크립트를 실행하지 않는다. 현재 저장소를 읽고, 최신 공개 문서를 조사하고, 그 프로젝트의 언어와 프레임워크 안에서 필요한 구현을 생성한다.</p>
+        </div>
       </div>
     </section>
 
     <section class="measurement shell">
-      <div class="section-head split-head">
-        <div><p class="section-number">04</p><h2 data-ko="좋아 보이는 architecture가 아니라, 반증 가능한 성능 가설." data-en="Not a pretty architecture diagram—a falsifiable performance thesis.">좋아 보이는 architecture가 아니라,<br/>반증 가능한 성능 가설.</h2></div>
-        <p class="section-intro" data-ko="이 프로젝트는 Jev/OpenJev가 항상 더 좋다고 주장하지 않는다. 실제 baseline과 같은 corpus·query를 사용해 측정하고, 실패하면 기존 시스템을 유지하는 것이 원칙이다." data-en="This project does not claim Jev or OpenJev is always better. Measure against the real baseline on the same corpus and queries; if it loses, keep the baseline.">이 프로젝트는 Jev/OpenJev가 항상 더 좋다고 주장하지 않는다. 실제 baseline과 같은 corpus·query를 사용해 측정하고, 실패하면 기존 시스템을 유지하는 것이 원칙이다.</p>
+      <div class="section-head">
+        <div><p class="section-number">04</p><h2 data-ko="좋아 보이는 architecture가 아니라, 반증 가능한 성능 가설." data-en="Not a pretty architecture diagram—a falsifiable performance thesis.">좋아 보이는 architecture가 아니라, <br/>반증 가능한 성능 가설.</h2></div>
       </div>
       <div class="metrics-strip">
         <div><span>↑</span><strong>Evidence Recall</strong><small data-ko="필수 근거를 놓치지 않는가" data-en="Did we recover required evidence?">필수 근거를 놓치지 않는가</small></div>
@@ -176,6 +175,7 @@
         <div><span>↓</span><strong>Unsupported Claims</strong><small data-ko="근거 없는 주장이 줄었는가" data-en="Did unsupported claims fall?">근거 없는 주장이 줄었는가</small></div>
         <div><span>↔</span><strong>p95 / Cost</strong><small data-ko="운영 한계 안에 있는가" data-en="Is it within the operating envelope?">운영 한계 안에 있는가</small></div>
       </div>
+      <p class="section-note" data-ko="이 프로젝트는 Jev/OpenJev가 항상 더 좋다고 주장하지 않는다. 실제 baseline과 같은 corpus·query를 사용해 측정하고, 실패하면 기존 시스템을 유지하는 것이 원칙이다." data-en="This project does not claim Jev or OpenJev is always better. Measure against the real baseline on the same corpus and queries; if it loses, keep the baseline.">이 프로젝트는 Jev/OpenJev가 항상 더 좋다고 주장하지 않는다. 실제 baseline과 같은 corpus·query를 사용해 측정하고, 실패하면 기존 시스템을 유지하는 것이 원칙이다.</p>
     </section>
 
     <section class="evidence-section" id="evidence">
@@ -183,7 +183,6 @@
         <div class="section-head">
           <p class="section-number">05</p>
           <h2 data-ko="공개 자료만 사용했다." data-en="Built only from public information.">공개 자료만 사용했다.</h2>
-          <p class="evidence-intro" data-ko="개인 대화, 비공개 benchmark, 내부 조직 자료는 이 사이트와 저장소에 포함하지 않았다. 아래의 사실과 가설도 분리해 표현한다." data-en="No private conversations, private benchmarks, or internal organisational material is included. Reported facts and architectural hypotheses are explicitly separated.">개인 대화, 비공개 benchmark, 내부 조직 자료는 이 사이트와 저장소에 포함하지 않았다. 아래의 사실과 가설도 분리해 표현한다.</p>
         </div>
         <div class="sources">
           <a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" target="_blank" rel="noreferrer"><span>TypeSafe</span><strong>Introducing System One Models and Jev</strong><em>2026-09-15 ↗</em></a>
@@ -194,6 +193,7 @@
           <a href="https://docs.ragas.io/en/latest/concepts/metrics/available_metrics/" target="_blank" rel="noreferrer"><span>Evaluation</span><strong>Ragas metrics</strong><em>Docs ↗</em></a>
           <a href="https://agentskills.io/specification" target="_blank" rel="noreferrer"><span>Format</span><strong>Agent Skills Specification</strong><em>Spec ↗</em></a>
         </div>
+        <p class="section-note" data-ko="개인 대화, 비공개 benchmark, 내부 조직 자료는 이 사이트와 저장소에 포함하지 않았다. 공개 발표와 가설은 구분해 표시했다." data-en="No private conversations, private benchmarks, or internal organisational material is included. Reported facts and architectural hypotheses are explicitly separated.">개인 대화, 비공개 benchmark, 내부 조직 자료는 이 사이트와 저장소에 포함하지 않았다. 공개 발표와 가설은 구분해 표시했다.</p>
       </div>
     </section>
   </main>

@@ -122,7 +122,7 @@ p { margin: 0; }
 }
 .nav nav a:hover { color: var(--ink); }
 .nav-actions { margin-left: auto; display: flex; gap: 8px; align-items: center; }
-.language-toggle, .github-btn {
+.language-toggle {
   font: 600 13px/1 var(--sans);
   border-radius: 999px;
   padding: 9px 14px;
@@ -138,8 +138,6 @@ p { margin: 0; }
   letter-spacing: .04em;
 }
 .language-toggle:hover { border-color: var(--ink-3); }
-.github-btn { background: var(--ink); color: var(--paper); }
-.github-btn:hover { background: var(--accent); color: #fff; }
 
 /* ---------- hero ---------- */
 .hero {
@@ -162,12 +160,6 @@ p { margin: 0; }
   font-weight: 800;
   letter-spacing: -0.035em;
 }
-.hero-lede {
-  margin-top: 28px;
-  font-size: clamp(16px, 1.5vw, 18px);
-  color: var(--ink-2);
-  max-width: 38em;
-}
 .hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 34px; }
 .hero-actions a {
   text-decoration: none;
@@ -178,8 +170,13 @@ p { margin: 0; }
 }
 .primary { background: var(--accent); color: #fff; }
 .primary:hover { background: var(--accent-ink); }
-.secondary { border: 1px solid var(--ink); color: var(--ink); }
-.secondary:hover { background: var(--ink); color: var(--paper); }
+.hero-actions a.highlight {
+  padding: 13px 4px;
+  border-radius: 0;
+  color: var(--ink);
+  background: linear-gradient(transparent 58%, var(--accent-soft) 58%, var(--accent-soft) 92%, transparent 92%);
+}
+.hero-actions a.highlight:hover { background: linear-gradient(transparent 58%, color-mix(in srgb, var(--accent) 35%, transparent) 58%, color-mix(in srgb, var(--accent) 35%, transparent) 92%, transparent 92%); }
 
 .hero-system {
   display: grid;
@@ -224,13 +221,6 @@ p { margin: 0; }
 
 /* ---------- section heads ---------- */
 .section-head { margin-bottom: clamp(32px, 4vw, 52px); max-width: 820px; }
-.split-head {
-  max-width: none;
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-  gap: 32px 56px;
-  align-items: end;
-}
 .section-number {
   font: 600 13px/1 var(--mono);
   color: var(--accent-ink);
@@ -242,8 +232,9 @@ p { margin: 0; }
   line-height: 1.22;
   font-weight: 800;
 }
-.section-intro, .skills-note, .evidence-intro { color: var(--ink-2); font-size: 16px; }
-.skills-note, .evidence-intro { margin-top: 20px; max-width: 40em; }
+.section-note { color: var(--ink-2); font-size: 16px; max-width: 44em; margin-top: 32px; }
+.band-note { color: var(--band-ink-2); font-size: 17px; max-width: 46em; margin-top: 40px; }
+.evidence-section .section-note { color: var(--band-ink-2); }
 
 /* ---------- 01 signal band ---------- */
 .signal-band {
@@ -345,6 +336,20 @@ p { margin: 0; }
 .skill-card h3 { font: 700 22px/1.2 var(--mono); letter-spacing: -0.01em; }
 .skill-card p { color: var(--ink-2); font-size: 15px; flex: 1; }
 .open-link { font-weight: 600; font-size: 14px; color: var(--accent-ink); }
+.skills-cta { margin-top: 32px; display: flex; flex-wrap: wrap; gap: 20px 32px; align-items: center; }
+.skills-cta .section-note { margin-top: 0; flex: 1 1 24em; }
+.github-cta {
+  display: inline-block;
+  background: var(--ink);
+  color: var(--paper);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: 16px;
+  padding: 15px 24px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.github-cta:hover { background: var(--accent); color: #fff; }
 
 /* ---------- 04 measurement ---------- */
 .measurement { padding-block: clamp(64px, 9vw, 112px); }
@@ -371,7 +376,6 @@ p { margin: 0; }
   padding-block: clamp(64px, 9vw, 112px);
 }
 .evidence-section .section-number { color: var(--accent); }
-.evidence-section .evidence-intro { color: var(--band-ink-2); }
 .sources { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
 .sources a {
   display: grid;
@@ -407,8 +411,7 @@ p { margin: 0; }
   .hero { grid-template-columns: 1fr; }
   .hero-system { max-width: 520px; }
   .fact-grid, .skill-cards { grid-template-columns: 1fr; }
-  .split-head { grid-template-columns: 1fr; }
-  .metrics-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .metrics-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .metrics-strip > div + div { padding-left: 0; border-left: 0; }
   .metrics-strip > div { border-bottom: 1px solid var(--line); padding: 18px 12px 18px 0; }
   .sources { grid-template-columns: 1fr; }
@@ -422,9 +425,10 @@ p { margin: 0; }
 
 @media (max-width: 639px) {
   body { font-size: 15.5px; }
+  .hero h1 br, .section-head h2 br { display: none; }
   .nav { gap: 12px; height: 54px; }
   .brand { font-size: 15px; }
-  .language-toggle, .github-btn { padding: 8px 11px; }
+  .language-toggle { padding: 8px 11px; }
   .hero-system { padding: 16px; gap: 8px; }
   .node { font-size: 12px; padding: 9px 4px; }
   .problem-matrix { grid-template-columns: 1fr; }
