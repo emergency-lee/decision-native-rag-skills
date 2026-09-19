@@ -28,7 +28,8 @@ Fixed in `22e438e`. Author checks before fixing: TypeSafe post shows "Sep 15, 20
 
 Rejected:
 - Broadening rag-migrate's trigger to "Top-K gives redundant context" (Fable) — conflicts with the other two reviewers' request to narrow triggers.
-- Removing "medical context" from the site's exclusion list (Fable, both rounds) — owner-supplied copy; it lists an excluded category and discloses nothing.
+
+Applied later at the owner's request: the domain-specific category in the site's exclusion list was generalised (Fable, both rounds).
 
 ## Round 2 — verification of claimed fixes + new defects
 

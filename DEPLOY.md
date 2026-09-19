@@ -29,4 +29,4 @@ Recommended Vercel settings after importing the GitHub repository:
 - EN / 한글 toggle changes all explanatory text.
 - Every GitHub skill link resolves to the public repository.
 - Public-source links resolve.
-- No private names, private benchmarks, medical/patient examples, internal organisations, private conversations, or private corpus references appear in the repository or rendered site.
+- No private names, private benchmarks, sensitive personal examples, internal organisations, private conversations, or private corpus references appear in the repository or rendered site.

@@ -16,7 +16,7 @@ Do not commit, quote, paraphrase, encode, or derive examples from:
 
 - private conversations,
 - private user memories or profiles,
-- private medical or patient information,
+- sensitive personal information,
 - internal organisational documents,
 - proprietary benchmarks or unpublished evaluation results,
 - confidential source code or credentials,

@@ -160,7 +160,7 @@ This public repository was authored from public sources and generic examples onl
 
 - no private benchmarks,
 - no personal conversation history,
-- no private medical or organisational material,
+- no sensitive personal or organisational material,
 - no proprietary document corpus,
 - no unpublished evaluation data.
 
