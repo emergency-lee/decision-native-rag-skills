@@ -16,13 +16,15 @@ Design a retrieval-augmented system from the corpus and the use case, with expli
 - **Evaluation is part of the design**, not a later phase.
 - **Private material stays private.** Design notes built from the user's corpus are not committed to a public repository.
 
-## Ask the human (stop until answered)
+## Ask the human (checkpoints)
+
+Start Step 1 immediately and ask these during it. Items 1, 4, and 6 may proceed on a recorded default; items 2 and 3 must be answered before Step 3; item 5 before Step 9.
 
 1. Authority and recency policy: which source overrides which, and which wins when they disagree.
 2. Access model: tenants, roles, document-level permissions.
 3. Whether a hosted engine may receive document text and queries; approved engines and budget.
 4. Latency SLO and cost ceiling.
-5. Who labels evaluation data.
+5. Who the two labellers and the adjudicator are.
 6. Scope of the prototype (which corpus slice, which users).
 
 ## Step 1 — Use case and corpus
@@ -42,7 +44,7 @@ Units carry one claim or one self-contained passage, not fixed token windows. Ke
 ## Step 3 — Security boundary
 
 - Enforce tenant/ACL filters **inside candidate generation**, before any decision call. Test for cross-tenant leakage.
-- Cache keys include the principal's access scope, or restricted units are never cached.
+- Cache key: principal access scope, query hash, unit id and version, engine version, and prompt/policy version — or restricted units are never cached.
 - Treat all unit text as untrusted: decision and reasoning prompts keep instructions and data separate and ignore instructions inside units; flag imperative or suspicious content at ingestion and log hits.
 - Minimise PII sent to engines; apply the retention and deletion rule to traces and caches.
 
@@ -55,7 +57,7 @@ Units carry one claim or one self-contained passage, not fixed token windows. Ke
 
 ## Step 5 — Decision layer
 
-Typed decisions (shared schema: `label`, `score`, `score_kind`, `calibrated`, `abstain_reason`, `engine_version`):
+Typed decisions (shared schema: `label`, `score`, `score_kind`, `calibrated`, `detail`, `abstain_reason`, `engine_version`; `authority` level and `sufficient` missing aspects go in `detail`):
 
 | Decision | Scope | Labels |
 |---|---|---|
@@ -66,7 +68,7 @@ Typed decisions (shared schema: `label`, `score`, `score_kind`, `calibrated`, `a
 | `claim_equivalent` | per pair | yes / no |
 | `sufficient` | per evidence set | sufficient / insufficient + missing aspects |
 
-**Engine selection**: measure on ≥200 labelled decisions per decision type — accuracy, calibration (reliability plot or ECE), cost, p95 latency, language coverage, privacy/residency, licence, availability, and behaviour on adversarial units. Candidates include low-cost typed decision models, local open models that score options without generating prose, rerankers, and general LLMs as fallback. Cascade only with calibrated scores; choose the escalation threshold on the labelled sample. Define a degraded mode (plain Top-K) when the engine is unavailable.
+**Engine selection**: labels are derived from the query labels (units, equivalence groups, conflicts) rather than collected separately; `claim_equivalent` pairs are sampled within similarity buckets. Use ~50 per decision type as a pilot and ≥200 per type (≥100 sets for `sufficient`) for the final choice. Measure accuracy, calibration (reliability plot or ECE), cost, p95 latency, language coverage, privacy/residency, licence, availability, and behaviour on adversarial units. Candidates include low-cost typed decision models, local open models that score options without generating prose, rerankers, and general LLMs as fallback. Cascade only with calibrated scores; choose the escalation threshold on the labelled sample. Define a degraded mode (plain Top-K) when the engine is unavailable.
 
 ## Step 6 — Evidence-set builder
 
@@ -90,7 +92,7 @@ Typed decisions (shared schema: `label`, `score`, `score_kind`, `calibrated`, `a
 
 ## Step 9 — Evaluation from day one
 
-Follow `rag-evaluate`. Cold start: draft 100–300 queries from corpus sections, have the named human prune and label them with the rubric; synthetic or LLM labels bootstrap only and are never the sole release evidence. Compare against a plain Top-K baseline on the same corpus so the decision layer has to earn its place.
+Follow `rag-evaluate`. Cold start: draft 100–300 queries from corpus sections as the pilot set, have the named human prune and label them with the rubric, then grow to the release-set size defined in `rag-evaluate` before any ship decision. Synthetic or LLM labels bootstrap only and are never the sole release evidence. Compare against a plain Top-K baseline on the same corpus so the decision layer has to earn its place.
 
 ## Deliverables
 

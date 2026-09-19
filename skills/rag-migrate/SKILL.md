@@ -25,18 +25,18 @@ Embeddings and rerankers stay as candidate generators. What changes is who decid
 - **Offline is the last autonomous stage.** Anything that touches live traffic, real users, production flags, or sends production data to a new provider requires the human approval described in Phase 5.
 - **Nothing private goes into a public repository.** Plans, traces, labels, and reports built from the user's system stay in the user's private environment.
 
-## Ask the human (stop until answered)
+## Ask the human (checkpoints)
 
-Record each answer in `MIGRATION_PLAN.md` under *Decisions*, with owner and date:
+Start Phase 0 and Phase 1 immediately. Ask items 1–5 during Phase 0; stop before Phase 2 until items 2 and 5 are answered. Item 6 is asked just before each live stage. Record each answer in `MIGRATION_PLAN.md` under *Decisions*, with owner and date:
 
 1. Authority and recency policy of the corpus: which source overrides which, and which wins when authority and recency disagree.
 2. Approved decision engine(s), whether a hosted engine may receive production queries and document text, and the monthly budget.
 3. Latency SLO and cost ceiling for the new path.
-4. Who labels evaluation data (see `rag-evaluate`).
+4. Who the two labellers and the adjudicator are (see `rag-evaluate`).
 5. Retention and PII handling for decision logs.
 6. Each live stage in Phase 5, separately.
 
-Propose a default for each, but do not act on a default for items 2, 5, and 6.
+Propose a default for each and record it; items 1, 3, and 4 may proceed on a recorded default. Never act on a default for items 2, 5, and 6.
 
 ## Phase 0 — Inventory (read-only)
 
@@ -61,11 +61,12 @@ Mark each item *observed in code*, *stated by the user*, or *unknown*. Unknowns 
 - Apply all tenant/ACL filters **inside candidate generation**, before any decision call.
 - Raise the candidate pool (typically 20–200) while delivered context stays at its current size.
 - Before enabling, compute expected decision volume (pool size × decision types × QPS), cost, and added latency, and confirm they fit the approved envelope.
-- Measure candidate recall on the replay set. This is the ceiling for everything downstream except bounded expansion.
+- Keep query interpretation (filters, reformulations) unchanged in this phase unless the plan says otherwise.
+- Measure **first-pass candidate recall** (before any expansion) on the replay set. This is the ceiling for everything downstream except bounded expansion.
 
 ## Phase 3 — Insert the decision layer
 
-Typed decisions, not prose. Every output follows the shared schema (`label`, `score`, `score_kind`, `calibrated`, `abstain_reason`, `engine_version`).
+Typed decisions, not prose. Every output follows the shared schema (`label`, `score`, `score_kind`, `calibrated`, `detail`, `abstain_reason`, `engine_version`); `authority` puts its level and `sufficient` its missing aspects in `detail`.
 
 | Decision | Scope | Labels | Purpose |
 |---|---|---|---|
@@ -92,14 +93,14 @@ Implementation notes:
 
 ## Phase 5 — Progressive rollout
 
-Offline paired replay (from `rag-evaluate`) must pass first. Every later step needs **its own** recorded human approval naming: the stage, environment, traffic share, window, guardrails, data boundary (which provider sees which data), expected extra cost, and rollback owner.
+Offline paired replay (from `rag-evaluate`) must pass its release gates first — pilot results are not enough. Every later step needs **its own** recorded human approval naming: the stage, environment, traffic share, window, guardrails, data boundary (which provider sees which data), expected extra cost, and rollback owner.
 
 1. Shadow on live traffic — candidate runs, baseline serves. Shadow roughly doubles decision cost.
 2. Canary with hard guardrails and automatic rollback.
 3. A/B with pre-declared primary and guardrail metrics.
 4. Full rollout; keep the baseline deployable for an agreed period.
 
-**Rollback runbook** (write it before step 1, rehearse it once during shadow): the serving flag, plus every non-flag change and how it is reverted — indexes, schemas, prompts, ingestion changes, caches (separate namespace per pipeline version), and external engine dependencies. Do not claim one-change rollback until the rehearsal passes.
+**Rollback runbook** (write it before step 1, rehearse it in staging before shadow and once more during shadow): the serving flag, plus every non-flag change and how it is reverted — indexes, schemas, prompts, ingestion changes, caches (separate namespace per pipeline version), and external engine dependencies. Do not claim one-change rollback until the rehearsal passes.
 
 ## Deliverables
 

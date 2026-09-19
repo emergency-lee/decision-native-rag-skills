@@ -14,33 +14,35 @@ Decide with measurements whether a candidate RAG pipeline should replace the bas
 - **Pre-declare** the primary metric, guardrails, thresholds, and analysis before looking at candidate results.
 - **An LLM judge is a sensor, not a verdict.** It must pass the calibration rule below before its numbers enter a gate.
 - **Build the harness inside the target project**, in its language and test tooling. No new repository or service.
-- **Offline replay is the last autonomous stage.** Shadow, canary, and A/B each need recorded human approval.
+- **Offline replay is the last autonomous stage.** Shadow, canary, and A/B each need recorded human approval. So does sending current or historical production data to a provider not already approved, even during offline replay.
 - **Private data stays private.** Query sets, labels, traces, and reports contain real queries and answers: store them in the user's private environment and never commit them to a public repository.
 
-## Ask the human (stop until answered)
+## Ask the human (checkpoints)
 
-1. Who labels, by when, and who adjudicates disagreements. LLM-drafted labels are allowed only if a named human reviews them, and the report must say so.
-2. The primary metric, guardrails, and the numeric threshold for each gate (propose defaults; see *Default gates*).
+Start inspection and the pilot immediately. Ask items 1 and 2 before labelling begins and record any default you propose. Item 3 is asked just before each live stage and never defaulted.
+
+1. Who the two labellers are, by when, and who adjudicates disagreements. LLM-drafted labels are allowed only if a named human reviews them, and the report must say so.
+2. The primary metric, guardrails, numeric threshold for each gate, and the release-set size (propose defaults; see *Default gates*).
 3. For each live stage: approval naming environment, traffic share, window, guardrails, data boundary (which provider sees which data), expected extra cost, and rollback owner.
 
 ## Stage 1 — Offline frozen replay
 
 1. **Query set.** Sample from real logs when available; stratify by intent, difficulty, and freshness. Add adversarial cases: near-duplicate sources, conflicting sources, superseded documents, unanswerable questions. With no logs (cold start), draft queries from corpus sections and have the named human prune them.
-2. **Labels (per query).** Required evidence units or claims; claim-equivalence groups among required and distractor units; for each known conflict the gold relation (contradiction / exception / supersession / authority) and the winning side if any; the current and authoritative unit when versions differ; whether the question is answerable. Store a label rubric with examples.
-3. **Size.** 50–200 labelled queries is a pilot for finding failure modes, not release evidence. Report a stratum's interval only if it has ≥30 queries.
+2. **Labels (per query).** Required evidence units **and** the required claims they support; claim-equivalence groups among required and distractor units; for each known conflict the gold relation (contradiction / exception / supersession / authority) and the winning side if any; the current and authoritative unit when versions differ; whether the question is answerable. Store a label rubric with examples.
+3. **Size.** 50–200 labelled queries is a pilot: its verdict can only be *iterate* or *keep the baseline*. A *ship* verdict needs the release set, sized by a power calculation on the primary metric (state baseline rate and minimum detectable effect), or ≥300 queries when no estimate exists. Report a stratum's interval only if it has ≥30 queries.
 4. **Runs.** Execute baseline and candidate on the frozen snapshot; store candidates, decisions, delivered set, answer, latency, and cost per query.
 5. **Analysis.** Paired per-query differences (candidate − baseline), 95% percentile bootstrap with ≥2000 resamples; resample by cluster when queries share a user or session. Only the primary metric and guardrails decide; everything else is diagnostic. If many metrics or strata are tested, apply Holm correction or label them exploratory. Queries where either arm abstains are reported separately, not dropped.
 
 ## Metrics
 
-Each metric defines numerator / denominator; if the denominator is 0 the query is excluded from that metric's paired mean and counted.
+Each metric defines numerator / denominator; if the denominator is 0 the query is excluded from that metric's paired mean and reported per metric as `n_undefined`.
 
 | Group | Metric | Definition |
 |---|---|---|
 | Retrieval | Candidate recall | required units in candidate pool (incl. expansion) / required units |
 | Evidence | Required-evidence recall | required units delivered / required units |
 | Evidence | Evidence coverage | required claims covered by ≥1 delivered unit / required claims |
-| Evidence | Delivered-evidence precision | delivered units labelled relevant / delivered units |
+| Evidence | Delivered-evidence precision | delivered units labelled relevant (`yes`; `partial` reported separately) / delivered units |
 | Evidence | Redundancy ratio | delivered units in the same claim-equivalence group as an earlier delivered unit / delivered units |
 | Evidence | Contradiction capture | known conflicts with both sides delivered / known conflicts |
 | Evidence | Unresolved contradiction rate | known conflicts where both sides were delivered but the relation label is missing or wrong / known conflicts |
@@ -50,7 +52,7 @@ Each metric defines numerator / denominator; if the denominator is 0 the query i
 | Answer | Provenance completeness | claims whose citation resolves **and** whose cited unit supports the claim / answer claims |
 | Answer | Abstention | report two rates: abstained on unanswerable / unanswerable, and abstained on answerable / answerable |
 | Answer | Claim count, answer length | diagnostic, to detect gaming (vaguer answers lower unsupported claims) |
-| Operations | p50 / p95 latency; cost per successful task | offline "successful" = answerable, no unsupported claim, required-evidence recall = 1; live task success replaces it in A/B |
+| Operations | p50 / p95 latency; cost per successful task | offline "successful" = answerable, judged correct and complete against the gold answer by a human or a calibrated judge, no unsupported claim, required-evidence recall = 1; live task success replaces it in A/B |
 
 Name the implementation and version of any library metric reused (for example context precision or faithfulness).
 

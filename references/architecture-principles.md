@@ -25,9 +25,10 @@ Every decision engine adapter returns:
   "score": 0.71,
   "score_kind": "probability | logit | rank | none",
   "calibrated": false,
+  "detail": null,
   "abstain_reason": null,
   "engine_version": "engine-id@version"
 }
 ```
 
-`label` values come from a closed enumeration per decision type. `abstain_reason` is set when the engine cannot decide (invalid input, timeout, out-of-scope language); the caller then applies the degraded path.
+`label` values come from a closed enumeration per decision type. `detail` carries structured extras: `authority` → `{"level": 2}`, `sufficient` → `{"missing_aspects": ["…"]}`. `abstain_reason` is set when the engine cannot decide (invalid input, timeout, out-of-scope language); the caller then applies the degraded path.

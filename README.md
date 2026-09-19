@@ -25,7 +25,7 @@ TypeSafe describes Jev as a System One model that maps unstructured state to typ
 ## The three skills
 
 ### 1. `rag-migrate`
-For an existing RAG system. The agent first inspects the real codebase, data flow, retrieval stack, access control, observability, and constraints. It then designs an incremental migration that preserves rollback and external behaviour while adding a decision layer, evidence-set construction, and contradiction handling. Offline replay is the last autonomous stage: shadow, canary, and A/B each require recorded human approval.
+For an existing RAG system. The agent first inspects the real codebase, data flow, retrieval stack, access control, observability, and constraints. It then designs an incremental migration that preserves rollback and external behaviour while adding a decision layer, evidence-set construction, and contradiction handling. Offline replay is the last autonomous stage: shadow, canary, A/B, production flag changes, and sending production data to a new provider each require recorded human approval.
 
 ### 2. `rag-evaluate`
 For baseline-versus-candidate comparison. It creates a task-specific evaluation plan from the current system and corpus, runs offline paired replay, and prepares shadow, canary, and A/B stages that run only with human approval. It measures retrieval, evidence quality, answer support, latency, cost, and user-facing outcomes.
@@ -132,8 +132,9 @@ The skill extends conventional RAG measures such as context precision, context r
 - evidence coverage,
 - redundancy ratio,
 - contradiction capture rate,
-- contradiction resolution accuracy,
-- temporal/authority correctness,
+- unresolved contradiction rate,
+- temporal correctness,
+- authority correctness,
 - unsupported-claim rate,
 - provenance completeness,
 - latency and cost distributions.
