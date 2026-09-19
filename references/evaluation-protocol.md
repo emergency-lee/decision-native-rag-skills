@@ -13,10 +13,11 @@
 - Per query: candidate ids and scores, decisions with score, score_kind, and calibration status, delivered set, answer, citations, latency, cost
 - Judge model and version, with its agreement rate against human labels
 
-## Paired analysis
+## Details
 
-Compute per-query differences (candidate − baseline) and report the mean with a 95% percentile bootstrap interval (≥2000 resamples, clustered by user or session when queries repeat). Only the pre-declared primary metric and guardrails gate; other metrics are diagnostic. Report strata with ≥30 queries; report abstentions separately. Report failure examples for every metric that regresses.
+Metric definitions, label spec, analysis rules, judge calibration, and canary/A/B sampling live inside the skill so they travel with it:
+
+- `skills/rag-evaluate/references/metrics.md`
+- `skills/rag-evaluate/references/statistics.md`
 
 All run artefacts contain real queries and stay in the evaluated system's private environment.
-
-See `skills/rag-evaluate/SKILL.md` for metric definitions and default gates.

@@ -14,21 +14,6 @@
 12. **Retrieved text is untrusted.** Decision and reasoning prompts separate instructions from unit text and ignore instructions inside units.
 13. **Humans approve live exposure.** Offline replay is the last autonomous stage; shadow, canary, A/B, and sending production data to a new provider need recorded approval.
 
-## Shared decision schema
+## Decision schema
 
-Every decision engine adapter returns:
-
-```json
-{
-  "decision": "relevant",
-  "label": "partial",
-  "score": 0.71,
-  "score_kind": "probability | logit | rank | none",
-  "calibrated": false,
-  "detail": null,
-  "abstain_reason": null,
-  "engine_version": "engine-id@version"
-}
-```
-
-`label` values come from a closed enumeration per decision type. `detail` carries structured extras: `authority` → `{"level": 2}`, `sufficient` → `{"missing_aspects": ["…"]}`. `abstain_reason` is set when the engine cannot decide (invalid input, timeout, out-of-scope language); the caller then applies the degraded path.
+The canonical decision types and output schema live in `skills/rag-migrate/references/decisions.md` (identical copy in `skills/rag-design/references/`). Each skill folder is self-contained so it works when installed on its own.
