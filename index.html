@@ -87,12 +87,12 @@
         </div>
         <div class="fact-grid">
           <article>
-            <span class="fact-type observed" data-ko="공개 사실" data-en="OBSERVED">공개 사실</span>
+            <span class="fact-type observed" data-ko="공개 발표" data-en="REPORTED">공개 발표</span>
             <h3 data-ko="Jev는 텍스트 생성 대신 typed probabilistic decision을 반환한다." data-en="Jev returns typed probabilistic decisions rather than prose generation.">Jev는 텍스트 생성 대신 typed probabilistic decision을 반환한다.</h3>
             <p data-ko="TypeSafe는 이를 System One 모델로 설명하며, 비정형 상태를 받아 소프트웨어가 직접 사용할 수 있는 구조화된 판단과 확률을 반환하는 방식으로 제시한다." data-en="TypeSafe describes this as a System One model: unstructured state in, structured decisions and probabilities that software can consume directly.">TypeSafe는 이를 System One 모델로 설명하며, 비정형 상태를 받아 소프트웨어가 직접 사용할 수 있는 구조화된 판단과 확률을 반환하는 방식으로 제시한다.</p>
           </article>
           <article>
-            <span class="fact-type observed" data-ko="공개 사실" data-en="OBSERVED">공개 사실</span>
+            <span class="fact-type observed" data-ko="공개 발표" data-en="REPORTED">공개 발표</span>
             <h3 data-ko="오픈 구현은 이미 ‘생성 없이 option logits를 읽는’ 패턴을 재현하고 있다." data-en="Open implementations already reproduce the pattern of scoring options without decoding prose.">오픈 구현은 이미 ‘생성 없이 option logits를 읽는’ 패턴을 재현하고 있다.</h3>
             <p data-ko="Qwen·Gemma 계열을 이용한 여러 독립 프로젝트가 shared-state prefill, one-pass option scoring, Jev-compatible API 같은 접근을 공개했다. 하지만 완전한 Jev 성능·경제성의 재현이 입증된 것은 아니다." data-en="Independent projects using Qwen and Gemma families have published shared-state prefill, one-pass option scoring, and Jev-compatible APIs. They have not yet established full Jev parity or universal economics.">Qwen·Gemma 계열을 이용한 여러 독립 프로젝트가 shared-state prefill, one-pass option scoring, Jev-compatible API 같은 접근을 공개했다. 하지만 완전한 Jev 성능·경제성의 재현이 입증된 것은 아니다.</p>
           </article>
@@ -145,7 +145,7 @@
           <a class="skill-card" href="https://github.com/emergency-lee/decision-native-rag-skills/blob/main/skills/rag-migrate/SKILL.md" target="_blank" rel="noreferrer">
             <span class="skill-index">01</span>
             <h3>rag-migrate</h3>
-            <p data-ko="기존 RAG를 읽고 baseline을 고정한 뒤, decision layer와 evidence-set builder를 단계적으로 삽입한다. shadow → canary → rollback을 기본값으로 둔다." data-en="Inspect an existing RAG, freeze the baseline, then incrementally insert a decision layer and evidence-set builder with shadow, canary, and rollback by default.">기존 RAG를 읽고 baseline을 고정한 뒤, decision layer와 evidence-set builder를 단계적으로 삽입한다. shadow → canary → rollback을 기본값으로 둔다.</p>
+            <p data-ko="기존 RAG를 읽고 baseline을 고정한 뒤, decision layer와 evidence-set builder를 단계적으로 삽입한다. 오프라인 검증까지만 자율로 하고, shadow·canary는 사람 승인과 롤백 리허설 뒤에 연다." data-en="Inspect an existing RAG, freeze the baseline, then incrementally insert a decision layer and evidence-set builder. Offline validation is autonomous; shadow and canary open only after human approval and a rehearsed rollback.">기존 RAG를 읽고 baseline을 고정한 뒤, decision layer와 evidence-set builder를 단계적으로 삽입한다. 오프라인 검증까지만 자율로 하고, shadow·canary는 사람 승인과 롤백 리허설 뒤에 연다.</p>
             <span class="open-link" data-ko="SKILL.md 보기 ↗" data-en="Open SKILL.md ↗">SKILL.md 보기 ↗</span>
           </a>
           <a class="skill-card" href="https://github.com/emergency-lee/decision-native-rag-skills/blob/main/skills/rag-evaluate/SKILL.md" target="_blank" rel="noreferrer">
@@ -186,7 +186,7 @@
           <p class="evidence-intro" data-ko="개인 대화, 비공개 benchmark, 의료 맥락, 내부 조직 자료는 이 사이트와 저장소에 포함하지 않았다. 아래의 사실과 가설도 분리해 표현한다." data-en="No private conversations, private benchmarks, medical context, or internal organisational material is included. Observed facts and architectural hypotheses are explicitly separated.">개인 대화, 비공개 benchmark, 의료 맥락, 내부 조직 자료는 이 사이트와 저장소에 포함하지 않았다. 아래의 사실과 가설도 분리해 표현한다.</p>
         </div>
         <div class="sources">
-          <a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" target="_blank" rel="noreferrer"><span>TypeSafe</span><strong>Introducing System One Models and Jev</strong><em>2026-09-14 ↗</em></a>
+          <a href="https://typesafe.ai/blog/introducing-system-one-models-and-jev" target="_blank" rel="noreferrer"><span>TypeSafe</span><strong>Introducing System One Models and Jev</strong><em>2026-09-15 ↗</em></a>
           <a href="https://github.com/TheoLeeCJ/openjev" target="_blank" rel="noreferrer"><span>Open source</span><strong>TheoLeeCJ/openjev</strong><em>GitHub ↗</em></a>
           <a href="https://github.com/daseinlabs/open-jev" target="_blank" rel="noreferrer"><span>Open source</span><strong>daseinlabs/open-jev</strong><em>GitHub ↗</em></a>
           <a href="https://github.com/ekzhang/openjev-sglang" target="_blank" rel="noreferrer"><span>Open source</span><strong>ekzhang/openjev-sglang</strong><em>GitHub ↗</em></a>

@@ -25,13 +25,13 @@ TypeSafe describes Jev as a System One model that maps unstructured state to typ
 ## The three skills
 
 ### 1. `rag-migrate`
-For an existing RAG system. The agent first inspects the real codebase, data flow, retrieval stack, interfaces, observability, and constraints. It then designs an incremental migration that preserves rollback and external behaviour while adding a decision layer, evidence-set construction, contradiction handling, and progressive rollout.
+For an existing RAG system. The agent first inspects the real codebase, data flow, retrieval stack, access control, observability, and constraints. It then designs an incremental migration that preserves rollback and external behaviour while adding a decision layer, evidence-set construction, and contradiction handling. Offline replay is the last autonomous stage: shadow, canary, and A/B each require recorded human approval.
 
 ### 2. `rag-evaluate`
-For automatic baseline-versus-candidate comparison. It creates a task-specific evaluation plan from the current system and corpus, then runs or implements offline replay, shadow evaluation, canary rollout, and live A/B testing. It measures retrieval, evidence quality, answer support, latency, cost, and user-facing outcomes.
+For baseline-versus-candidate comparison. It creates a task-specific evaluation plan from the current system and corpus, runs offline paired replay, and prepares shadow, canary, and A/B stages that run only with human approval. It measures retrieval, evidence quality, answer support, latency, cost, and user-facing outcomes.
 
 ### 3. `rag-design`
-For a system with no existing RAG. It designs a production architecture from the corpus and use case, including source ingestion, semantic units, hybrid broad retrieval, a pluggable decision engine, evidence-set optimisation, conflict/temporal logic, provenance, updates, and evaluation.
+For a system with no existing RAG. It designs a production architecture from the corpus and use case, including source ingestion, semantic units, access control and prompt-injection boundaries, hybrid broad retrieval, a pluggable decision engine, evidence-set optimisation, conflict/temporal logic, provenance, updates, and evaluation.
 
 ## No bundled Python harness
 
@@ -101,14 +101,14 @@ The skills instead propose a falsifiable hypothesis:
 
 ### Default acceptance targets
 
-These are starting gates, not universal promises. The evaluation skill must adapt them to the baseline and domain.
+These are starting gates, not universal promises. `skills/rag-evaluate/SKILL.md` holds the canonical table and metric definitions; thresholds are declared per project and approved by the system owner.
 
 | Dimension | Default migration gate |
 |---|---|
 | Required-evidence recall | improve, or no regression when baseline is already high |
 | Delivered-evidence precision | improve or remain within agreed tolerance |
-| Redundant/claim-equivalent context | reduce materially |
-| Unresolved contradiction rate | reduce materially |
+| Redundant/claim-equivalent context | fall by the declared margin |
+| Unresolved contradiction rate | fall by the declared margin |
 | Unsupported answer claims | must not regress |
 | Citation/provenance completeness | must not regress |
 | p95 end-to-end latency | remain within product SLO or explicitly approved trade-off |
@@ -122,9 +122,9 @@ A team should not ship a migration merely because an offline LLM judge prefers i
 `rag-evaluate` treats evaluation as four stages:
 
 1. **Offline frozen replay** — same queries, same corpus version, paired baseline/candidate runs.
-2. **Shadow** — candidate executes on real traffic but baseline continues to serve users.
-3. **Canary** — small percentage receives the candidate under hard guardrails and rollback.
-4. **A/B** — sticky random assignment with pre-declared primary and guardrail metrics.
+2. **Shadow** (human approval) — candidate executes on real traffic but baseline continues to serve users.
+3. **Canary** (human approval) — small percentage receives the candidate under hard guardrails and rollback.
+4. **A/B** (human approval) — sticky random assignment with pre-declared primary and guardrail metrics.
 
 The skill extends conventional RAG measures such as context precision, context recall, and faithfulness with evidence-system metrics:
 
@@ -140,7 +140,7 @@ The skill extends conventional RAG measures such as context precision, context r
 
 ## Why Jev matters to this architecture
 
-TypeSafe's public description of Jev is significant because it frames semantic judgement as a first-class software primitive: structured questions in, typed probabilistic decisions out, with no need to generate and parse prose. Their published material reports very low latency and input cost for suitable System One tasks.
+TypeSafe's public description of Jev is significant because it frames semantic judgement as a first-class software primitive: structured questions in, typed probabilistic decisions out, with no need to generate and parse prose. Their launch post reports that Jev is two orders of magnitude faster and more efficient than existing LLMs on System One tasks; this is a vendor claim and is not verified here.
 
 Independent open-source work is also notable. Current public projects show that open models can implement one-pass or prefill-only option scoring, shared-state computation, and Jev-compatible APIs. The strongest public results remain early and workload-dependent; they do **not** establish full Jev parity or universal economics.
 
@@ -177,12 +177,12 @@ skills/
   rag-evaluate/SKILL.md
   rag-design/SKILL.md
 references/
-  architecture-principles.md
+  architecture-principles.md   shared decision schema
   evaluation-protocol.md
   public-sources.md
-index.html
-styles.css
-app.js
+index.html, styles.css, app.js   landing page (https://jev-shift.vercel.app)
+favicon.*, icon-*.png, og.png, site.webmanifest
+vercel.json, DEPLOY.md, qa/
 PUBLIC_DATA_POLICY.md
 LICENSE
 ```

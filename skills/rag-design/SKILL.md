@@ -1,6 +1,6 @@
 ---
 name: rag-design
-description: Design a new production RAG system as a decision-native evidence pipeline — corpus analysis, semantic units, hybrid broad retrieval, a pluggable decision engine, evidence-set construction with conflict and sufficiency handling, provenance, incremental updates, and built-in evaluation. Use when the user explicitly asks to design a RAG or knowledge-retrieval system where none exists yet. For an existing RAG use rag-migrate.
+description: Design a new production RAG system as a decision-native evidence pipeline — corpus analysis, semantic units, access control, hybrid broad retrieval, a pluggable decision engine, evidence-set construction with conflict and sufficiency handling, provenance, updates, and built-in evaluation. Use only when the user asks to design a RAG or document question-answering system where none exists yet. For an existing RAG use rag-migrate.
 ---
 
 # rag-design
@@ -9,76 +9,97 @@ Design a retrieval-augmented system from the corpus and the use case, with expli
 
 ## Ground rules
 
+- **Inspect the host repository and runtime first** — language, framework, infrastructure, existing data stores — and design inside them.
 - **Corpus first, stack second.** Understand documents, users, and questions before choosing a vector database or a model.
-- **Fit the host project.** Use the language, framework, and infrastructure the team already runs.
-- **Look up current documentation** before naming a provider API, SDK call, or model identifier. Record sources and dates.
-- **Keep the decision engine pluggable** behind one interface.
+- **Look up current documentation** before naming a provider API, SDK call, or model identifier. Record sources and access dates.
+- **Keep the decision engine pluggable** behind the shared schema in `references/architecture-principles.md`.
 - **Evaluation is part of the design**, not a later phase.
+- **Private material stays private.** Design notes built from the user's corpus are not committed to a public repository.
+
+## Ask the human (stop until answered)
+
+1. Authority and recency policy: which source overrides which, and which wins when they disagree.
+2. Access model: tenants, roles, document-level permissions.
+3. Whether a hosted engine may receive document text and queries; approved engines and budget.
+4. Latency SLO and cost ceiling.
+5. Who labels evaluation data.
+6. Scope of the prototype (which corpus slice, which users).
 
 ## Step 1 — Use case and corpus
 
 Answer in writing:
 
 - Who asks, what they ask, what a good answer looks like, and when abstaining is correct.
-- Document types, volume, languages, update rate, deletions.
-- **Authority**: which sources override which (official over informal, newer over older, specific over general).
-- **Time**: validity periods, versions, supersession chains.
-- Access control and privacy boundaries.
+- Document types, volume, update rate, deletions.
+- **Languages**: languages of queries and documents, whether they can differ, and which languages the embedding model, sparse analyser, and decision engine actually cover.
+- **Authority** and **time**: validity periods, versions, supersession chains.
+- Privacy: PII present in documents, queries, and logs; retention and deletion requirements.
 
 ## Step 2 — Semantic units
 
-Choose units that carry one claim or one self-contained passage, not fixed token windows. Keep structure (title path, section, table, list) and metadata (source id, version, effective date, authority level, access scope) on every unit.
+Units carry one claim or one self-contained passage, not fixed token windows. Keep structure (title path, section, table, list) and metadata on every unit: source id, version, effective date, authority level, access scope, language.
 
-## Step 3 — Broad retrieval
+## Step 3 — Security boundary
 
+- Enforce tenant/ACL filters **inside candidate generation**, before any decision call. Test for cross-tenant leakage.
+- Cache keys include the principal's access scope, or restricted units are never cached.
+- Treat all unit text as untrusted: decision and reasoning prompts keep instructions and data separate and ignore instructions inside units; flag imperative or suspicious content at ingestion and log hits.
+- Minimise PII sent to engines; apply the retention and deletion rule to traces and caches.
+
+## Step 4 — Query interpretation and broad retrieval
+
+- Interpret the query: language, filters (time, source, scope), and reformulations for sparse and dense search.
 - Hybrid candidate generation: dense + sparse + metadata filters.
-- Target a candidate pool large enough that required evidence is almost always present (commonly 20–200 units).
-- Measure **candidate recall** separately; it is the ceiling for the whole system.
+- Target a pool large enough that required evidence is almost always present (commonly 20–200 units), within the latency and cost budget.
+- Measure **candidate recall** separately; it is the ceiling for the system apart from bounded expansion.
 
-## Step 4 — Decision layer
+## Step 5 — Decision layer
 
-Typed decisions per candidate, batched per query:
+Typed decisions (shared schema: `label`, `score`, `score_kind`, `calibrated`, `abstain_reason`, `engine_version`):
 
-| Decision | Output |
-|---|---|
-| `relevant` | yes / partial / no + probability |
-| `evidence_role` | supports / contradicts / context / none |
-| `temporal_status` | current / superseded / unknown |
-| `authority` | ordinal level |
+| Decision | Scope | Labels |
+|---|---|---|
+| `relevant` | per unit | yes / partial / no |
+| `evidence_role` | per unit | supports / contradicts / context / none |
+| `temporal_status` | per unit | current / superseded / unknown |
+| `authority` | per unit | ordinal level |
+| `claim_equivalent` | per pair | yes / no |
+| `sufficient` | per evidence set | sufficient / insufficient + missing aspects |
 
-Choose the engine by measured cost, latency, and accuracy on a labelled sample. Candidates include low-cost typed decision models, local open models scoring options without generating prose, rerankers, and general LLMs as a fallback. Cascade: cheap engine first, escalate only low-confidence cases.
+**Engine selection**: measure on ≥200 labelled decisions per decision type — accuracy, calibration (reliability plot or ECE), cost, p95 latency, language coverage, privacy/residency, licence, availability, and behaviour on adversarial units. Candidates include low-cost typed decision models, local open models that score options without generating prose, rerankers, and general LLMs as fallback. Cascade only with calibrated scores; choose the escalation threshold on the labelled sample. Define a degraded mode (plain Top-K) when the engine is unavailable.
 
-## Step 5 — Evidence-set builder
+## Step 6 — Evidence-set builder
 
 1. Filter irrelevant units.
-2. Deduplicate by claim equivalence; keep the most authoritative, most current representative.
-3. Keep both sides of conflicts and label the relation: contradiction, exception, supersession, or authority.
-4. Test sufficiency; expand within a bounded loop, or abstain and state the gap.
+2. Keep both sides of conflicts and label the relation: contradiction, exception, supersession, or authority. These pairs are never deduplicated.
+3. Deduplicate the rest by claim equivalence within similarity buckets, choosing representatives by the recorded authority-then-recency policy and keeping other sources as corroborating provenance.
+4. Ask `sufficient`; expand for at most N rounds, or abstain and state the gap.
 5. Hand the set to the reasoning model with provenance attached.
 
-## Step 6 — Reasoning and answer
+## Step 7 — Reasoning and answer
 
-- Prompt the model to use only the evidence set and to cite unit ids.
-- Surface unresolved conflicts to the user instead of silently choosing one side.
+- Use only the evidence set; cite unit ids.
+- Surface unresolved conflicts to the user instead of silently choosing a side.
 - Return answer, citations, and a gap or abstention note.
 
-## Step 7 — Updates and operations
+## Step 8 — Updates and operations
 
-- Incremental ingestion with version tracking; invalidate decision caches when a unit or engine version changes.
-- Per-request tracing: candidates, decisions, delivered set, answer, latency, cost.
-- Budget alarms for decision-engine volume, since cheap judgements multiply quickly.
+- Incremental ingestion with version tracking; invalidate decision caches when a unit, prompt/policy, or engine version changes.
+- Per-request tracing under the retention rule: candidates, decisions, delivered set, answer, latency, cost.
+- Budget alarms on decision-engine volume.
 
-## Step 8 — Evaluation from day one
+## Step 9 — Evaluation from day one
 
-Create the labelled query set and metrics described in `rag-evaluate` alongside the first prototype. Compare against a plain Top-K baseline built on the same corpus so the decision layer has to earn its place.
+Follow `rag-evaluate`. Cold start: draft 100–300 queries from corpus sections, have the named human prune and label them with the rubric; synthetic or LLM labels bootstrap only and are never the sole release evidence. Compare against a plain Top-K baseline on the same corpus so the decision layer has to earn its place.
 
 ## Deliverables
 
-- `DESIGN.md`: use case, corpus analysis, authority and time model, architecture, interfaces, engine selection with evidence, operating envelope, open questions.
-- A minimal end-to-end prototype in the host stack.
+- `DESIGN.md`: use case, corpus analysis, Decisions list, authority/time model, language plan, security boundary, architecture, interfaces, engine selection with evidence, operating envelope, open questions.
+- A minimal end-to-end prototype in the host stack, limited to the approved scope.
 - An evaluation harness seeded with labelled queries.
 
 ## Stop conditions
 
-- The corpus has no reliable way to express authority or time and the use case depends on them — fix the metadata first.
+- The corpus cannot express authority or time and the use case depends on them — fix the metadata first.
+- Access control cannot be enforced before the decision layer.
 - The Top-K baseline already meets every target at lower cost — keep it simple.
