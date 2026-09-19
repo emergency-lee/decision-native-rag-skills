@@ -17,4 +17,4 @@ Low-cost typed decision models, local open models that score options without gen
 ## Cascade and degraded mode
 
 - Cascade only with calibrated scores; choose the escalation threshold on the labelled sample.
-- Define a degraded mode (plain Top-K) for when the engine is unavailable or rate-limited, and test it.
+- When the decision layer times out, is unavailable, or is rate-limited, degrade in this order, always inside ACL filters: frozen baseline if available, else lexical + metadata retrieval, else plain Top-K. Test the chosen path. Every path still passes deterministic verification; if the source store or ACL check is unavailable, abstain.

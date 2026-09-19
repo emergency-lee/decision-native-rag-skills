@@ -1,6 +1,6 @@
 ---
 name: rag-evaluate
-description: Compare a frozen baseline RAG pipeline against a named candidate with paired measurements and rollout gates — offline replay, then human-approved shadow, canary, and A/B — covering evidence recall, redundancy, contradiction handling, unsupported claims, provenance, latency, and cost. Use only when the user asks for a baseline-versus-candidate comparison or rollout gates. Not a general RAG audit, not a single-bug diagnosis, and not "evaluate/improve my RAG" without a candidate change — ask which is wanted first.
+description: Compare a frozen baseline RAG pipeline against a named candidate with paired measurements and rollout gates — offline replay, then human-approved shadow, canary, and A/B — covering evidence recall, redundancy, contradiction handling, unsupported claims, provenance, latency, cost, and optional compiled-state cold/warm reuse. Use only when the user asks for a baseline-versus-candidate comparison or rollout gates. Not a general RAG audit, not a single-bug diagnosis, and not "evaluate/improve my RAG" without a candidate change — ask which is wanted first.
 ---
 
 # rag-evaluate
@@ -17,6 +17,10 @@ Decide with measurements whether a candidate RAG pipeline should replace the bas
 - **Offline replay is the last autonomous stage.** Shadow, canary, and A/B each need recorded human approval. So does sending current or historical production data to a provider not already approved, even during offline replay.
 - **Private data stays private.** Query sets, labels, traces, and reports contain real queries and answers: keep them in the user's private environment, never in a public repository.
 
+## Separating effects
+
+When a candidate combines a decision layer and state/cache reuse, the arms are **A** baseline, **B** decision layer only, **C** state reuse only, **D** both. If the report will attribute gains to each component, all four arms are required and the contrasts are pre-declared; if only the bundle is evaluated, compare D−A only and make no per-component claim. This is the declared exception to "change one thing at a time". For compiled-state candidates, measure cold and warm paths separately: a cache hit is a workload condition, not a quality result.
+
 ## Ask the human (checkpoints)
 
 Start inspection and the pilot immediately. Ask items 1 and 2 before labelling begins and record any default you propose. Item 3 is asked just before each live stage and never defaulted.
@@ -30,7 +34,7 @@ Start inspection and the pilot immediately. Ask items 1 and 2 before labelling b
 1. **Query set.** Sample from real logs when available; stratify by intent, difficulty, and freshness. Add adversarial cases: near-duplicates, conflicting sources, superseded documents, unanswerable questions. With no logs, draft queries from corpus sections and have the named human prune them.
 2. **Labels.** Follow the label spec in [references/metrics.md](references/metrics.md).
 3. **Pilot, then release set.** The pilot can only say *iterate* or *keep the baseline*; *ship* needs the powered release set ([references/statistics.md](references/statistics.md)).
-4. **Runs.** Baseline and candidate on the frozen snapshot; store candidates, decisions, delivered set, answer, latency, and cost per query.
+4. **Runs.** Baseline and candidate on the frozen snapshot; store candidates, decisions, resolved scope and whether it was expanded, delivered set, per-unit verification result and reason, serving path (normal / degraded), answer, latency, and cost per query; for state reuse, cold/warm/cache status and state/manifest version.
 5. **Analysis.** Paired differences with bootstrap intervals, primary metric and guardrails only, per the rules in [references/statistics.md](references/statistics.md).
 
 Metric definitions: [references/metrics.md](references/metrics.md).
@@ -47,6 +51,8 @@ Thresholds are proposed in `EVAL_PLAN.md` and approved by the owner.
 | Unresolved contradiction rate | Falls by the declared margin | Offline |
 | Unsupported-claim rate | Must not regress | Offline, canary |
 | Provenance completeness | Must not regress | Offline |
+| Delivered-set verification | Zero failures after the drop/expand loop | All |
+| Source recovery (state reuse) | Every id the state path returns resolves to its correct authorised span (accuracy = 100%) | All |
 | p95 latency | Within SLO or an approved trade-off | All |
 | Cost per successful task | Improves, or the quality gain is justified in writing | Offline, A/B |
 | User / task success | Improves in A/B before full rollout | A/B |
@@ -72,4 +78,5 @@ Report these as blockers instead of producing numbers:
 - the baseline cannot be reproduced on the frozen snapshot;
 - the judge misses its calibration floor;
 - the query set does not cover the failure modes the candidate targets;
+- the compiled-state candidate cannot prove source recovery, freshness after invalidation, or tenant/cache isolation;
 - no named human owns the labels.

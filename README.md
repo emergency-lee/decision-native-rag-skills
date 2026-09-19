@@ -2,7 +2,7 @@
 
 Agent Skills for migrating, evaluating, and designing RAG systems around a **decision-native evidence pipeline** rather than fixed Top-K retrieval.
 
-> Retrieve broadly. Decide explicitly. Build an evidence set. Resolve conflicts. Reason only over what matters.
+> Resolve scope, then retrieve as broadly as the scope needs. Decide explicitly. Build an evidence set. Verify. Reason only over what matters.
 
 This repository is intentionally **provider-agnostic**. Jev and open implementations such as OpenJev are important examples of low-cost semantic decision operators, but the skills do not require any one model, SDK, language, vector database, or orchestration framework.
 
@@ -25,13 +25,13 @@ TypeSafe describes Jev as a System One model that maps unstructured state to typ
 ## The three skills
 
 ### 1. `rag-migrate`
-For an existing RAG system. The agent first inspects the real codebase, data flow, retrieval stack, access control, observability, and constraints. It then designs an incremental migration that preserves rollback and external behaviour while adding a decision layer, evidence-set construction, and contradiction handling. Offline replay is the last autonomous stage: shadow, canary, A/B, production flag changes, and sending production data to a new provider each require recorded human approval.
+For an existing RAG system. The agent first inspects the real codebase, data flow, retrieval stack, access control, observability, and constraints. It then designs an incremental migration that preserves rollback and external behaviour while adding scope resolution, a decision layer, evidence-set construction, contradiction handling, and deterministic verification. Offline replay is the last autonomous stage: shadow, canary, A/B, production flag changes, and sending production data to a new provider each require recorded human approval.
 
 ### 2. `rag-evaluate`
-For baseline-versus-candidate comparison. It creates a task-specific evaluation plan from the current system and corpus, runs offline paired replay, and prepares shadow, canary, and A/B stages that run only with human approval. It measures retrieval, evidence quality, answer support, latency, cost, and user-facing outcomes.
+For baseline-versus-candidate comparison. It creates a task-specific evaluation plan from the current system and corpus, runs offline paired replay, and prepares shadow, canary, and A/B stages that run only with human approval. It measures retrieval, evidence quality, answer support, latency, cost, and user-facing outcomes. When a candidate includes state reuse, cold and warm paths are measured separately.
 
 ### 3. `rag-design`
-For a system with no existing RAG. It designs a production architecture from the corpus and use case, including source ingestion, semantic units, access control and prompt-injection boundaries, hybrid broad retrieval, a pluggable decision engine, evidence-set optimisation, conflict/temporal logic, provenance, updates, and evaluation.
+For a system with no existing RAG. It designs a production architecture from the corpus and use case, including source ingestion, semantic units, access control and prompt-injection boundaries, scope resolution, hybrid broad retrieval, a pluggable decision engine, evidence-set optimisation, conflict/temporal logic, deterministic verification, provenance, updates, and evaluation.
 
 ## No bundled Python harness
 
@@ -53,7 +53,7 @@ This means the same skill can work in Python, TypeScript, Java, Go, or mixed sta
 
 ```text
                          ┌──────────────────────┐
-Query ──────────────────►│ Query interpretation │
+Query ──────────────────►│ Scope resolution     │
                          └──────────┬───────────┘
                                     │
                                     ▼
@@ -82,7 +82,14 @@ Query ──────────────────►│ Query interpr
                               │         │
                     retrieve/expand     ▼
                               │  ┌──────────────────────┐
-                              └─►│ Reasoning/generation │
+                              └─►│ Deterministic verify │
+                                 │ id / version / ACL   │
+                                 │ locator / span       │
+                                 └──────────┬───────────┘
+                                            │
+                                            ▼
+                                 ┌──────────────────────┐
+                                 │ Reasoning/generation │
                                  └──────────┬───────────┘
                                             │
                                             ▼
@@ -90,6 +97,8 @@ Query ──────────────────►│ Query interpr
 ```
 
 The core idea is not "replace embeddings". Embeddings remain excellent candidate generators. The change is to stop asking a single similarity score or fixed Top-K cutoff to solve relevance, evidence sufficiency, redundancy, conflict, time, and authority at once.
+
+An optional compiled-state lane — prefix/KV reuse as an accelerator, never the source of truth — is specified in [`references/compiled-state.md`](references/compiled-state.md).
 
 ## Performance thesis
 
@@ -149,7 +158,7 @@ The architectural implication is still useful even if vendors/models change:
 
 ```text
 Old default:   retrieve → rank → Top-K → LLM
-New option:    retrieve wide → decide → build evidence set → LLM
+New option:    resolve scope → retrieve (bounded) → decide → evidence set → verify → LLM
 ```
 
 The decision layer can be hosted, local, open, proprietary, task-specific, or cascaded.
@@ -179,6 +188,7 @@ skills/
   rag-design/SKILL.md
 references/
   architecture-principles.md   shared decision schema
+  compiled-state.md            optional prefix/KV lane
   evaluation-protocol.md
   public-sources.md
 index.html, styles.css, app.js   landing page (https://jev-shift.vercel.app)

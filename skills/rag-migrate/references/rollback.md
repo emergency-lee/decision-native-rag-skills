@@ -18,6 +18,9 @@ List every change and how it is reverted:
 - prompt templates and query-interpretation changes;
 - ingestion changes;
 - caches — separate namespace per pipeline version, so rollback never reads candidate entries;
+- degraded-routing flag;
+- compiled-state or cache manifest/namespace version;
+- cancel or revert any in-flight control-path activation;
 - external engine dependencies and credentials.
 
-Record the rollback trigger (which guardrail, which threshold), who executes it, and how success is verified.
+Record the rollback trigger (which guardrail, which threshold — including fallback rate above an agreed threshold), who executes it, and how success is verified.

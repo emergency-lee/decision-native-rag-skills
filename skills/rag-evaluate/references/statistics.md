@@ -12,6 +12,7 @@ Numbers marked *starting value* are common conventions, not derived requirements
 - Report a stratum's interval only if it has ≥30 queries (*starting value*).
 - Queries where either arm abstains are reported separately, not dropped.
 - "Improve" / "fall" in a gate means by at least the declared margin with the 95% interval excluding zero. Default margin for redundancy and unresolved contradictions: 20% relative (*starting value*).
+- When arms A–D are declared, report paired contrasts B−A, C−A, D−B, D−C and the interaction (D−C)−(B−A), each with the same paired bootstrap as the main contrast. Apply Holm across the declared contrasts.
 
 ## Pilot versus release set
 

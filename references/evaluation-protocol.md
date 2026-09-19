@@ -10,7 +10,7 @@
 ## Required artefacts per run
 
 - Corpus, index, model, prompt, and engine versions
-- Per query: candidate ids and scores, decisions with score, score_kind, and calibration status, delivered set, answer, citations, latency, cost
+- Per query: candidate ids and scores, decisions with score, score_kind, and calibration status, resolved scope and whether it was expanded, delivered set, per-unit verification result and reason, serving path (normal / degraded), answer, citations, latency, cost; for state reuse: cold/warm/cache status and state/manifest version
 - Judge model and version, with its agreement rate against human labels
 
 ## Details

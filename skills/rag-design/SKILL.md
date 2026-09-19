@@ -1,6 +1,6 @@
 ---
 name: rag-design
-description: Design a new production RAG system as a decision-native evidence pipeline — corpus analysis, semantic units, access control, hybrid broad retrieval, a pluggable decision engine, evidence-set construction with conflict and sufficiency handling, provenance, updates, and built-in evaluation. Use only when the user asks to design a RAG or document question-answering system where none exists yet. For an existing RAG use rag-migrate.
+description: Design a new production RAG system as a decision-native evidence pipeline — corpus analysis, semantic units, access control, scope resolution, hybrid broad retrieval, a pluggable decision engine, evidence-set construction with conflict and sufficiency handling, deterministic verification, provenance, updates, and built-in evaluation. Use only when the user asks to design a RAG or document question-answering system where none exists yet. For an existing RAG use rag-migrate.
 ---
 
 # rag-design
@@ -44,7 +44,9 @@ One claim or one self-contained passage per unit, not fixed token windows. Metad
 
 ## Step 4 — Query interpretation and broad retrieval
 
-Interpret the query (language, filters, reformulations), then hybrid candidate generation (dense + sparse + metadata filters). Size the pool (commonly 20–200 units) within budget. Measure **candidate recall** separately.
+Interpret the query (language, filters, reformulations) and **resolve scope**: an explicit document, collection, or tenant named by the user stays explicit. Then hybrid candidate generation (dense + sparse + metadata filters) inside that scope. Size the pool (commonly 20–200 units) within budget. Measure **candidate recall** and **scope accuracy** separately.
+
+If the corpus is stable and queried repeatedly and the runtime supports prefix/KV reuse, benchmark a compiled-state lane via `rag-evaluate` (cold/warm, source recovery, invalidation, isolation). It is an accelerator, not the source of truth.
 
 ## Step 5 — Decision layer
 
@@ -52,19 +54,20 @@ Decision types and schema: [references/decisions.md](references/decisions.md). E
 
 ## Step 6 — Evidence-set builder
 
-1. Filter irrelevant units.
+1. Filter irrelevant units. A confident unit-level decision is not set sufficiency.
 2. Keep both sides of conflicts with the relation label; never deduplicate them.
 3. Deduplicate the rest by claim equivalence within similarity buckets, choosing representatives by the recorded authority-then-recency policy and keeping other sources as corroborating provenance.
-4. Ask `sufficient`; expand for at most N rounds, or abstain and state the gap.
-5. Hand the set to the reasoning model with provenance.
+4. Ask `sufficient`; expand for at most N rounds, or abstain and state the gap. An explicit user-named scope is never widened on the system's own initiative: stay inside it and report the gap, or ask the user before widening.
+5. **Verify** before reasoning: every delivered unit id resolves to an authorised source version/hash the principal may read (ACL re-checked at delivery) and the unit's locator/span exists in that version. Drop failures; if the set is then insufficient, re-enter the loop (expand → sufficient → verify) within the same N-round budget, else abstain with the gap. Newly expanded units are never delivered unverified.
+6. Hand the set to the reasoning model with provenance.
 
 ## Step 7 — Reasoning and answer
 
-Use only the evidence set and cite unit ids. Surface unresolved conflicts instead of choosing a side silently. Return answer, citations, and a gap or abstention note.
+Use only the evidence set and cite unit ids. After the answer, every citation must resolve to a delivered, verified unit. Surface unresolved conflicts instead of choosing a side silently. Return answer, citations, and a gap or abstention note.
 
 ## Step 8 — Updates and operations
 
-Incremental ingestion with version tracking; invalidate decision caches on unit, prompt/policy, or engine version change. Per-request tracing under the retention rule. Budget alarms on decision-engine volume.
+Incremental ingestion with version tracking; invalidate decision caches on unit, prompt/policy, or engine version change. **Control path** (index repair, re-embedding, version reconciliation, cache/state rebuild) runs off the query path and activates atomically. The query path has a tested degraded mode (frozen baseline if available, else lexical+metadata, else plain Top-K; always inside ACL filters) when the decision layer times out or fails. Every path, degraded ones included, still passes deterministic verification; if the source store or ACL check is unavailable, abstain rather than serve unverified evidence. Per-request tracing under the retention rule. Budget alarms on decision-engine volume.
 
 ## Step 9 — Evaluation from day one
 
@@ -80,4 +83,5 @@ Follow `rag-evaluate`. Cold start: draft 100–300 queries from corpus sections 
 
 - The corpus cannot express authority or time and the use case depends on them — fix the metadata first.
 - Access control cannot be enforced before the decision layer.
+- The design cannot verify ACL, id, version, and span fail-closed before reasoning (a temporarily unavailable verifier means abstain, never unverified serving).
 - The Top-K baseline already meets every target at lower cost — keep it simple.
