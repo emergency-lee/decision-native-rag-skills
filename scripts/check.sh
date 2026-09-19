@@ -43,7 +43,7 @@ if [ "${1:-}" = "--sources" ]; then
     fi
     [ -z "$head" ] && { say "FAIL $repo HEAD lookup failed"; fail=1; continue; }
     [ "$head" = "$sha" ] && say "ok   $repo HEAD $sha unchanged" || say "NOTE $repo HEAD $head (recorded $sha) — re-read its README and update public-sources.md"
-  done < <(sed -nE 's#.*github.com/([^/]+/[^ :|]+).*commit ([0-9a-f]{7}).*#\1|\2#p' references/public-sources.md)
+  done < <(sed -nE 's#.*github.com/([^/]+/[^/ :|]+).*commit ([0-9a-f]{7}).*#\1|\2#p' references/public-sources.md)
 fi
 
 exit $fail
