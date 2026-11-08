@@ -2,3 +2,7 @@
 .DS_Store
 node_modules
 qa/*.png
+
+# Local AI agent configuration and state
+.claude/
+.codex/
